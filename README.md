@@ -1,6 +1,8 @@
 JCR Mock
 =====================
 
+A JCR node mocking library.
+
 Intent
 ------
 
