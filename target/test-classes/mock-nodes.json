@@ -1,0 +1,22 @@
+{ac2d111 : {
+    binary : {
+        nodeType : "nt:file"
+    },
+    trustEntity : "type:String",
+    view : "type:String"
+},
+ac2d112 : {
+    binary : {
+        nodeType : "nt:file"
+    },
+    trustEntity : "type:String",
+    view : "type:String"
+},
+ac2d113 : {
+    binary : {
+        nodeType : "nt:file"
+    },
+    trustEntity : "type:String",
+    view : "type:String"
+}
+}
