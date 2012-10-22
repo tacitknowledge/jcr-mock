@@ -1,11 +1,11 @@
-JCR Mocking Framework
+JCR Mock
 =====================
 
 Intent
 ------
 
-The intent of this framework is to eliminate boilerplate code for setting up JCR node structuctures in unit tests by
-writing JCR structures in a format such as JSON.  Take the following example.
+The intent of this framework is to eliminate boilerplate code for setting up JCR node structures in unit tests by
+writing JCR structures in an easy to read format such as JSON.  Take the following example.
 
 1.  Say you're working on an application which uses a JCR repository for storing images.
 
