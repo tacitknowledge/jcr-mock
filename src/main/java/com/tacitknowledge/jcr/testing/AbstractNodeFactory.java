@@ -10,7 +10,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 
 /**
-* @author Daniel Valencia (Daniel.Valencia@nike.com)
+* @author Daniel Valencia (daniel@tacitknowledge.com)
 */
 public abstract class AbstractNodeFactory implements NodeFactory {
     private NodeTypeManager nodeTypeManager;

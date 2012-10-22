@@ -5,7 +5,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public enum PropertyTypeEnum {
     BINARY(PropertyType.BINARY){

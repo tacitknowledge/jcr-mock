@@ -22,7 +22,7 @@ import java.util.Map;
  * This class will provide a mapping mechanism for overriding OOTB node types for the JCR Mocking Framework since it's
  * impossible to redefine OOTB node types via the NodeTypeManager.registerNodeType method.
  *
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class NodeTypeMapper {
     private static Map<String, Map<String,String>> parentToChildNodeTypeMap = new HashMap<String, Map<String,String>>();

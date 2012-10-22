@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class JcrMockingUtils {
 

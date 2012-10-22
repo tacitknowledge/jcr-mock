@@ -6,7 +6,7 @@ import javax.jcr.PropertyType;
 import java.util.HashMap;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class PropertyDefinitionMap extends HashMap<String, String>{
 

@@ -156,7 +156,7 @@ An important feature for this framework is the ability to create node structures
 make our JSON much more concise.
 
 *  JCR Node Types are supported by use of a the 'nodeType' special property keyword.  For example:
-```json
+```
     myNode: {
         nodeType : 'nt:file'
     }
@@ -170,7 +170,7 @@ make our JSON much more concise.
 *  If the type information is included in the property, you can set the JCR Property value by using the 'value' special
    keyword:
 ```
-        myImportantProperty : 'type:String, value:The value of the property'
+    myImportantProperty : 'type:String, value:The value of the property'
 ```
 
 *  If no type information is included in the property value, it will default as a String property.

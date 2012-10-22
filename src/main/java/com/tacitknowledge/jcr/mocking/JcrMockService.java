@@ -4,7 +4,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public interface JcrMockService {
 

@@ -9,7 +9,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public interface NodeFactory {
 

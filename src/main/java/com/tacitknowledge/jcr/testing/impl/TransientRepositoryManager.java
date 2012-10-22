@@ -13,7 +13,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import java.io.*;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class TransientRepositoryManager implements JcrRepositoryManager {
     private String repositoryConfigPath;

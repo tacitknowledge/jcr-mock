@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory {
 

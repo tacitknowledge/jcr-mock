@@ -14,7 +14,7 @@ import java.io.IOException;
  * Base abstract class for all JCR related unit tests.
  * Creates an in-memory repository before each test and destroys it after each test.
 
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public abstract class AbstractJcrTest {
     private Repository repository;

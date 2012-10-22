@@ -9,7 +9,7 @@ import javax.jcr.PropertyType;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class PropertyDefinitionMapTest {
 

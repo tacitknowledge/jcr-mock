@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.jcr.nodetype.NodeDefinition;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class NodeTypeResolver {
 

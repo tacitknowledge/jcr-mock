@@ -7,7 +7,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import java.io.IOException;
 
 /**
- * @author Daniel Valencia (Daniel.Valencia@nike.com)
+ * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public interface JcrRepositoryManager {
     Repository startTransientRepository() throws IOException;
