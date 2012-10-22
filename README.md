@@ -100,8 +100,9 @@ writing them in an easy to read format such as JSON.  For example:
 <a name="usage" />
 Usage
 ------
-```xml
 *  You can include the framework as a dependency with _test_ scope in your pom.xml file:
+
+```xml
         <dependency>
             <groupId>com.tacitknowledge</groupId>
             <artifactId>jcr-test</artifactId>
@@ -111,27 +112,31 @@ Usage
 ```
 
 *  Then you can use the mock service on your tests:
-        String myNodeStructure = "{myAsset : " +
-                                        "{ trustEntity : " +
-                                            "{" +
-                                                "nodeType: 'nt:unstructured'," +
-                                                " view:'left'," +
-                                                " binary : " +
-                                                   "{ " +
-                                                      "nodeType : 'nt:file'" +
-                                                   "}," +
-                                                " anotherNode: " +
-                                                   "{ " +
-                                                      "attri: 'valueyes'" +
-                                                    "} " +
-                                            "}" +
-                                         "} " +
-                                    "} ";
-        Node myAssetNode = JcrMockingUtils.createNodesFromJsonString(myNodeStructure);
+
+```java    
+    String myNodeStructure = "{myAsset : " +
+                                    "{ trustEntity : " +
+                                        "{" +
+                                            "nodeType: 'nt:unstructured'," +
+                                            " view:'left'," +
+                                            " binary : " +
+                                               "{ " +
+                                                  "nodeType : 'nt:file'" +
+                                               "}," +
+                                            " anotherNode: " +
+                                               "{ " +
+                                                  "attri: 'valueyes'" +
+                                                "} " +
+                                        "}" +
+                                     "} " +
+                                "} ";
+    Node myAssetNode = JcrMockingUtils.createNodesFromJsonString(myNodeStructure);
+```
 
 *  You can also load from a json file:
-        InputStream assetsJsonFile = getClass().getResourceAsStream("/assets.json");
-        Node assetsNode = JcrMockingUtils.createNodesFromJsonFile(assetsJsonFile);
+
+    InputStream assetsJsonFile = getClass().getResourceAsStream("/assets.json");
+    Node assetsNode = JcrMockingUtils.createNodesFromJsonFile(assetsJsonFile);
 
 
 Supported Functionality
@@ -172,6 +177,7 @@ make our JSON much more concise.
 ### Mocked Methods
 
 *  Node.getNode() with relative paths.  For example, this will work:
+
 ```java
         String jsonNodeStructure = "{" +
             "a: {" +
@@ -190,6 +196,7 @@ make our JSON much more concise.
 ```
 
 *  Node.getParent() will work all the way to the top:
+
 ```java
         String jsonNodeStructure = "{" +
             "a: {" +
