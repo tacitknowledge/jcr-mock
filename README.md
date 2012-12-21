@@ -109,7 +109,7 @@ Usage
 ```xml
     <dependency>
         <groupId>com.tacitknowledge</groupId>
-        <artifactId>jcr-test</artifactId>
+        <artifactId>jcr-mock</artifactId>
         <version>0.1-SNAPSHOT</version>
         <scope>test</scope>
     </dependency>
@@ -177,7 +177,7 @@ make our JSON much more concise.
 
 *  If no type information is included in the property value, it will default as a String property.
 *  If no property value information can be determined, the following happens:
-    *  If it's a String, the default is an empty string "".
+    *  If it's a String, the default is an empty string.
     *  If it's a number, date or binary, an exception is thrown.
 
 ### Special Property Types
