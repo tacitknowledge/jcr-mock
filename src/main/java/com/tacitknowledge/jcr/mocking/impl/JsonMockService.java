@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.tacitknowledge.jcr.mocking.JcrMockService;
 import com.tacitknowledge.jcr.mocking.domain.PropertyDefinitionMap;
 import com.tacitknowledge.jcr.testing.NodeFactory;
-import com.tacitknowledge.parser.JsonParser;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -20,30 +20,28 @@ import java.util.Set;
 public class JsonMockService implements JcrMockService {
 
     private final NodeFactory nodeFactory;
-    private final JsonParser jsonParser;
 
     public JsonMockService(NodeFactory nodeFactory){
         this.nodeFactory = nodeFactory;
-        this.jsonParser = new JsonParser();
     }
 
     @Override
     public Node fromString(Node parentNode, String nodeDefinition) throws RepositoryException {
-        JsonObject object = jsonParser.parse(nodeDefinition);
+        JsonObject object = parseJson(nodeDefinition);
         return buildChildNodes(object, parentNode);
     }
 
     @Override
     public Node fromString(String jsonNodeStructure) throws RepositoryException {
-        JsonObject jsonNodeObject = jsonParser.parse(jsonNodeStructure);
+        JsonObject jsonNodeObject = parseJson(jsonNodeStructure);
         return buildChildNodes(jsonNodeObject, null);
     }
 
     private Node buildChildNodes(JsonObject parentJsonObject, Node parent) throws RepositoryException {
-        Node childNode = null;
+        Node childNode;
         List<Node> childNodes = new ArrayList<Node>();
         if(parent == null){
-            parent = nodeFactory.createNode("");
+            parent = nodeFactory.createNode(StringUtils.EMPTY);
         }
         Set<Map.Entry<String, JsonElement>> childElements = parentJsonObject.entrySet();
 
@@ -61,8 +59,6 @@ public class JsonMockService implements JcrMockService {
                 }
                 childNodes.add(childNode);
                 buildChildNodes(childJsonObject, childNode);
-            }else if(childElement.isJsonArray()){
-
             }else if(childElement.isJsonPrimitive()){
                 String childElementValue = childElement.getAsString();
                 PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(childElementValue);
@@ -71,8 +67,6 @@ public class JsonMockService implements JcrMockService {
                 if(!NodeFactory.NODE_TYPE.equals(childElementName)){
                     nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
                 }
-            }else{
-                //Should be JsonNull, ignore it
             }
         }
         nodeFactory.createIteratorFor(parent, childNodes);
@@ -80,5 +74,13 @@ public class JsonMockService implements JcrMockService {
         return parent;
     }
 
-
+    /**
+     * Parses a given String as JSON
+     * @param jsonString - JSON object as String
+     * @return JsonObject
+     */
+    private JsonObject parseJson(String jsonString) {
+        com.google.gson.JsonParser parser = new com.google.gson.JsonParser();
+        return parser.parse(jsonString).getAsJsonObject();
+    }
 }

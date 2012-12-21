@@ -31,7 +31,6 @@ public class JcrMockServiceTest {
 
     private JcrMockService mockService;
 
-    private static final String VIEW = "view";
     private NodeFactory mockFactory;
 
     @Rule
@@ -81,7 +80,6 @@ public class JcrMockServiceTest {
 
         Node parentNode = mock(Node.class);
         mockService.fromString(parentNode, jsonNodeDefinitionWithNodeTypes);
-
 
         Node assetNode = parentNode.getNode("ac2d111");
         assertNotNull(assetNode);
