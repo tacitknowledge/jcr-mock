@@ -1,18 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
+<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tacitknowledge</groupId>
     <artifactId>jcr-mock</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
     <name>JCR Mock</name>
-    <description>JCR testing utilities</description>
+    <description>Testing and mocking utilities for the JCR</description>
     <url>https://github.com/tacitknowledge/jcr-mock</url>
     <licenses>
         <license>
@@ -22,21 +17,27 @@
         </license>
     </licenses>
 
+    <parent>
+        <groupId>com.tacitknowledge</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>2</version>
+    </parent>
+
     <scm>
         <url>git@github.com:tacitknowledge/jcr-mock.git/tags/0.1-SNAPSHOT</url>
         <connection>git@github.com:tacitknowledge/jcr-mock.git/tags/0.1-SNAPSHOT</connection>
     </scm>
     <developers>
-      <developer>
-        <id>dvalencia</id>
-        <name>Daniel Valencia</name>
-        <email>daniel@tacitknowledge.com</email>
-      </developer>
-      <developer>
-        <id>saskew</id>
-        <name>Scott Askew</name>
-        <email>scott@tacitknowledge.com</email>
-      </developer>
+        <developer>
+            <id>dvalencia</id>
+            <name>Daniel Valencia</name>
+            <email>daniel@tacitknowledge.com</email>
+        </developer>
+        <developer>
+            <id>saskew</id>
+            <name>Scott Askew</name>
+            <email>scott@tacitknowledge.com</email>
+        </developer>
     </developers>
 
     <dependencies>
@@ -83,17 +84,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
