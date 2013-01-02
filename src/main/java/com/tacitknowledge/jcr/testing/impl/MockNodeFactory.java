@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 
 
 /**
+ * Factory for Mock nodes and properties
+ *
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory {
@@ -41,10 +43,8 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
             when(property.getName()).thenReturn(name);
             when(property.getType()).thenReturn(propertyType);
             when(parent.getProperty(name)).thenReturn(property);
-        } else {
-            if(property.getValue() == null){
-                createValue(property, propertyValue, propertyType);
-            }
+        } else if(property.getValue() == null){
+            createValue(property, propertyValue, propertyType);
         }
     }
 
@@ -94,13 +94,12 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
 
         Value[] defaultValues = propertyDefinition.getDefaultValues();
 
-        if(propertyDefinition.isMultiple()){
-            if(defaultValues != null){
+        if(defaultValues != null){
+            if(propertyDefinition.isMultiple()){
                 when(property.isMultiple()).thenReturn(true);
                 when(property.getValues()).thenReturn(defaultValues);
             }
-        }else{
-            if(defaultValues != null && defaultValues.length > 0){
+            else if(defaultValues.length > 0){
                 Value value = defaultValues[0];
                 when(property.getValue()).thenReturn(value);
             }
@@ -110,10 +109,8 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
     @Override
     public void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException {
         NodeIteratorAdapter nodeIteratorAdapter;
-        if (parent != null) {
-            nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
-            when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
-        }
+        nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
+        when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
     }
 
     @Override
@@ -129,7 +126,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
                 createBinaryValueFor(property, returnValue, valueStr);
                 break;
             case PropertyType.BOOLEAN:
-                createBooleanValueFor(property, returnValue, valueStr);
+                createBooleanValueFor(returnValue, valueStr);
                 break;
             case PropertyType.DOUBLE:
                 createDoubleValueFor(property, returnValue, valueStr);
@@ -177,13 +174,8 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         when(returnValue.getString()).thenReturn(valueStr);
     }
 
-    private void createBooleanValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
-        if(valueStr == null ||
-                (!valueStr.toLowerCase().equalsIgnoreCase(Boolean.TRUE.toString()) &&
-                !valueStr.toLowerCase().equalsIgnoreCase(Boolean.FALSE.toString()))) {
-            throw new IllegalArgumentException("Input parameter is not a boolean: " + valueStr);
-        }
-        Boolean booleanVal = new Boolean(valueStr);
+    private void createBooleanValueFor(Value returnValue, String valueStr) throws RepositoryException {
+        Boolean booleanVal = Boolean.valueOf(valueStr);
         when(returnValue.getBoolean()).thenReturn(booleanVal);
     }
 

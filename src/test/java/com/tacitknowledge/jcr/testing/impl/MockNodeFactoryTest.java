@@ -1,16 +1,21 @@
 package com.tacitknowledge.jcr.testing.impl;
 
-import com.tacitknowledge.jcr.testing.NodeFactory;
 import com.tacitknowledge.jcr.testing.utils.JcrTestingUtils;
 import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.nodetype.PropertyDefinition;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +24,14 @@ import java.util.Calendar;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class MockNodeFactoryTest {
-    private NodeFactory nodeFactory;
+
+    private MockNodeFactory nodeFactory;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -33,6 +40,24 @@ public class MockNodeFactoryTest {
     public void beforeEachTest() throws RepositoryException, IOException {
         NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
         this.nodeFactory = new MockNodeFactory(nodeTypeManager, new NodeTypeResolver());
+    }
+
+    @Test
+    public void shouldReturnNullIfNodeIsCreatedWithNullNodeType() throws RepositoryException
+    {
+        Node parentNode = mock(Node.class);
+        Node node = nodeFactory.createNode(parentNode, "binary", (NodeType) null);
+        assertNotNull(node);
+        assertNull(node.getPrimaryNodeType());
+    }
+
+    @Test
+    public void shouldCreateNodeWithNullParent() throws RepositoryException
+    {
+        Node node = nodeFactory.createNode(null, "binary", (NodeType) null);
+        assertNotNull(node);
+        assertNull(node.getPrimaryNodeType());
+        assertNull(node.getParent());
     }
 
     @Test
@@ -52,12 +77,12 @@ public class MockNodeFactoryTest {
         JcrTestingUtils.assertPropertyType(jcrContent.getProperty("jcr:mimeType"), PropertyType.STRING);
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void shouldThrowRuntimeExceptionIfEmptyTypeIsPassed() throws RepositoryException {
         Node parentNode = mock(Node.class);
 
-        expectedException.expect(RuntimeException.class);
-        nodeFactory.createNode(parentNode, "invalid", "");
+        nodeFactory.createNode(parentNode, "invalid", StringUtils.EMPTY);
+        fail("A runtime exception should have been thrown");
     }
 
     @Test
@@ -94,14 +119,44 @@ public class MockNodeFactoryTest {
         assertEquals("Value should be true", true, value.getBoolean());
 
         // Now test unhappy path
-        String invalidBoolValue = "this is not boolean";
+        String invalidBoolValue = "foo";
 
-        expectedException.expect(IllegalArgumentException.class);
         value = nodeFactory.createValueFor(property, invalidBoolValue, PropertyType.BOOLEAN);
+        assertNotNull(value);
+        assertEquals(false, value.getBoolean());
 
     }
 
     @Test
+    public void shouldCreatePropertiesFromDefinition() throws RepositoryException
+    {
+        Value[] defaultValues = new Value[]{mock(Value.class), mock(Value.class)};
+        PropertyDefinition definition = mock(PropertyDefinition.class);
+        when(definition.getName()).thenReturn("test_multiple").thenReturn("test_not_multiple").thenReturn("test_invalid");
+        when(definition.isMultiple()).thenReturn(true).thenReturn(false).thenReturn(false);
+        when(definition.getRequiredType()).thenReturn(PropertyType.STRING);
+        when(definition.getDefaultValues()).thenReturn(defaultValues).thenReturn(defaultValues).thenReturn(new Value[0]);
+        Node parentNode = mock(Node.class);
+        nodeFactory.createPropertyFromDefinition(parentNode, definition);
+        Property property = parentNode.getProperty("test_multiple");
+        assertNotNull(property);
+        assertTrue(property.isMultiple());
+        assertSame(defaultValues, property.getValues());
+
+        nodeFactory.createPropertyFromDefinition(parentNode, definition);
+        property = parentNode.getProperty("test_not_multiple");
+        assertNotNull(property);
+        assertFalse(property.isMultiple());
+        assertSame(defaultValues[0], property.getValue());
+
+        nodeFactory.createPropertyFromDefinition(parentNode, definition);
+        property = parentNode.getProperty("test_invalid");
+        assertNotNull(property);
+        assertFalse(property.isMultiple());
+        assertNull(property.getValue());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void shouldReturnValidBinaryObject() throws RepositoryException, IOException {
         String binaryStr = "/files/air_jordan.jpg";
 
@@ -130,21 +185,22 @@ public class MockNodeFactoryTest {
             fail("Problem reading input stream");
         } finally {
             if(is != null) is.close();
-            if(byteArrayOutputStream != null) byteArrayOutputStream.close();
+            byteArrayOutputStream.close();
         }
 
-        assertTrue("Shoul have some bytes", byteArrayOutputStream.toByteArray().length > 0);
+        assertTrue("Should have some bytes", byteArrayOutputStream.toByteArray().length > 0);
 
         // Unhappy Path
 
         String pathThatDoesNotExist = "Invalid Path";
 
-        expectedException.expect(IllegalArgumentException.class);
-        binaryValue = nodeFactory.createValueFor(property, pathThatDoesNotExist, PropertyType.BINARY);
+        nodeFactory.createValueFor(property, pathThatDoesNotExist, PropertyType.BINARY);
+
+        fail("An IllegalArgumentException was expected!");
     }
 
-    @Test
-    public void shouldReturValidDoubleValue() throws RepositoryException {
+    @Test(expected = NumberFormatException.class)
+    public void shouldReturnValidDoubleValue() throws RepositoryException {
         String doubleStr = "9.0";
         Value returnedValue;
 
@@ -155,14 +211,13 @@ public class MockNodeFactoryTest {
         assertEquals("Expected a Double", 9.0, returnedValue.getDouble(), 0);
 
         //Unhappy Path
-
         String invalidDouble = "This ain't a double";
 
-        expectedException.expect(NumberFormatException.class);
         nodeFactory.createValueFor(property, invalidDouble, PropertyType.DOUBLE);
+        fail("A NumberFormatException should have been thrown");
     }
 
-    @Test
+    @Test(expected = NumberFormatException.class)
     public void shouldReturnValidDecimalValue() throws RepositoryException {
         String decimalStr = "5.7";
 
@@ -176,11 +231,12 @@ public class MockNodeFactoryTest {
 
         String invalidBigDecimal = "This ain't no decimal";
 
-        expectedException.expect(NumberFormatException.class);
         nodeFactory.createValueFor(property, invalidBigDecimal, PropertyType.DECIMAL);
+
+        fail("A NumberFormatException should have been thrown");
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void shouldReturnValidDateValue() throws RepositoryException {
         String dateStr = "09/24/1982";   // This is the supported format
 
@@ -198,7 +254,18 @@ public class MockNodeFactoryTest {
 
         String unsupportedDateFormat = "Sep 24, 1982";
 
-        expectedException.expect(RuntimeException.class);
         nodeFactory.createValueFor(property, unsupportedDateFormat, PropertyType.DATE);
+
+        fail("A runtime exception was expected due to an unsupported date");
     }
+
+    @Test
+    public void shouldReturnDefaultValue() throws RepositoryException
+    {
+        Property property = mock(Property.class);
+        Value value = nodeFactory.createValueFor(property, "test", 100);
+        assertNotNull(value);
+        assertEquals("test", value.getString());
+    }
+
 }

@@ -9,6 +9,8 @@ import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 
 /**
+ * Interface for Node Factory classes
+ *
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public interface NodeFactory {
@@ -25,6 +27,13 @@ public interface NodeFactory {
 
     Node createNode(String name) throws RepositoryException;
 
+    /**
+     * Creates a node iterator for the given child nodes in relation with their parent.
+     * The parent node must not be null
+     * @param parent Parent node for the children and the iterator. Must not be null.
+     * @param childNodes Child nodes to iterate through
+     * @throws RepositoryException If a repository error happens
+     */
     void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException;
 
     Value createValueFor(Property property, String valueStr, int valueType) throws RepositoryException;

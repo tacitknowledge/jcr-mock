@@ -13,49 +13,73 @@ import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
-public class JcrRepositoryRunnerTest {
+public class JcrRepositoryRunnerTest
+{
 
     private static String repositoryConfigPath = "/jackrabbit/jackrabbit-transient.xml";
+
     private static String repositoryDirectoryPath = "/jackrabbit/repository";
+
     private static String userName = "admin";
+
     private static String password = "admin";
 
     @Test
-    public void testRepositoryCreation() throws IOException, RepositoryException {
-        JcrRepositoryManager manager = new TransientRepositoryManager(repositoryConfigPath, repositoryDirectoryPath, userName, password);
-        Repository repository = manager.startTransientRepository();
+    public void shouldCreateRepository() throws IOException, RepositoryException
+    {
+        JcrRepositoryManager manager = new TransientRepositoryManager(repositoryConfigPath, repositoryDirectoryPath,
+                userName, password);
+        Repository repository = manager.startRepository();
         Session session = manager.getSession();
         NodeTypeManager nodeTypeManager = manager.getNodeTypeManager();
 
-        assertNotNull("Expected repository to be not null", repository);
-        assertNotNull("Expected session to be not null", session);
-        assertNotNull("Expected nodeTypeManager to be not null", nodeTypeManager);
+        assertNotNull("Repository should not be null", repository);
+        assertNotNull("Session should not be null", session);
+        assertNotNull("NodeTypeManager should not be null", nodeTypeManager);
+        assertEquals("We should get the same repository instance every time", repository, manager.startRepository());
+        assertSame("Node type manager should be the same", nodeTypeManager, manager.getNodeTypeManager());
 
         manager.shutdownRepository();
     }
 
     @Test
-    public void tesCreateNodeTypeManagerAfterShuttingDownRepository() throws RepositoryException, IOException {
-        NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager(repositoryConfigPath, repositoryDirectoryPath, userName, password);
+    public void shouldGetValidJcrSession() throws Exception
+    {
+         JcrRepositoryManager manager = new TransientRepositoryManager(repositoryConfigPath, repositoryDirectoryPath,
+                userName, password);
+        manager.startRepository();
+        Session session = manager.getSession();
+        assertSame(session, manager.getSession());
+        session.logout();
+        assertNotSame(session, manager.getSession());
+        manager.shutdownRepository();
+    }
+
+    @Test
+    public void shouldCreateNodeTypeManagerAfterShuttingDownRepository() throws RepositoryException, IOException
+    {
+        NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager(repositoryConfigPath,
+                repositoryDirectoryPath, userName, password);
         assertNotNull(nodeTypeManager);
 
         NodeType ntFileNodeType = nodeTypeManager.getNodeType("nt:file");
         assertNotNull(ntFileNodeType);
 
         NodeDefinition[] nodeDefinitions = ntFileNodeType.getChildNodeDefinitions();
-        for(NodeDefinition nodeDefinition : nodeDefinitions){
+        for (NodeDefinition nodeDefinition : nodeDefinitions)
+        {
             String nodeName = nodeDefinition.getName();
             assertFalse("Node name should not be empty", StringUtils.isEmpty(nodeName));
         }
 
         PropertyDefinition[] propertyDefinitions = ntFileNodeType.getPropertyDefinitions();
-        for(PropertyDefinition propertyDefinition: propertyDefinitions){
+        for (PropertyDefinition propertyDefinition : propertyDefinitions)
+        {
             String propName = propertyDefinition.getName();
             assertFalse("PropertyName should not be empty", StringUtils.isEmpty(propName));
         }
