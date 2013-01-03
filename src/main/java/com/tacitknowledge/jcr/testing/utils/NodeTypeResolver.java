@@ -10,11 +10,12 @@ import javax.jcr.nodetype.NodeDefinition;
 public class NodeTypeResolver {
 
     /**
-     * ToDo: Add Javadoc
-     * @param nodeDefinition
-     * @return
+     * Resolves the primary type for a node given a node definition
+     *
+     * @param nodeDefinition Node definition
+     * @return Name for node's primary type
      */
-    public String resolvePrimaryType(NodeDefinition nodeDefinition) {
+    public static String resolvePrimaryType(NodeDefinition nodeDefinition) {
         String primaryTypeName = nodeDefinition.getRequiredPrimaryTypeNames()[0];
 
         String parentNodeTypeName = nodeDefinition.getDeclaringNodeType().getName();

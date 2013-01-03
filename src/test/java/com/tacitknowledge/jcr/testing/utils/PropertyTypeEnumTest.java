@@ -27,11 +27,13 @@ public class PropertyTypeEnumTest {
     private PropertyTypeEnum decimalType;
     private PropertyTypeEnum doubleType;
     private PropertyTypeEnum referenceType;
+    private PropertyTypeEnum booleanType;
 
     @Before
     public void beforeEachTest(){
         stringType = PropertyTypeEnum.fromType(PropertyType.STRING);
         binaryType = PropertyTypeEnum.fromType(PropertyType.BINARY);
+        booleanType = PropertyTypeEnum.fromType(PropertyType.BOOLEAN);
         longType = PropertyTypeEnum.fromType(PropertyType.LONG);
         dateType = PropertyTypeEnum.fromType(PropertyType.DATE);
         decimalType = PropertyTypeEnum.fromType(PropertyType.DECIMAL);
@@ -61,6 +63,7 @@ public class PropertyTypeEnumTest {
         when(value.getDate()).thenReturn(mockedCalendar);
 
         assertEquals(mockedString, stringType.getObjectValue(value));
+        assertEquals(mockedBoolean, booleanType.getObjectValue(value));
         assertEquals(mockedBinary, binaryType.getObjectValue(value));
         assertEquals(mockedLong, longType.getObjectValue(value));
         assertEquals(mockedCalendar, dateType.getObjectValue(value));

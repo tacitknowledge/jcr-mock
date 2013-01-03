@@ -1,7 +1,6 @@
 package com.tacitknowledge.jcr.testing.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.derby.iapi.util.StringUtil;
 import org.apache.jackrabbit.JcrConstants;
 
 import java.util.HashMap;
@@ -24,7 +23,8 @@ import java.util.Map;
  *
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
-public class NodeTypeMapper {
+public class NodeTypeMapper{
+
     private static Map<String, Map<String,String>> parentToChildNodeTypeMap = new HashMap<String, Map<String,String>>();
 
     static{
