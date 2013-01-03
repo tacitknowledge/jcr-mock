@@ -9,12 +9,15 @@ import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import javax.jcr.*;
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeTypeManager;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,17 +32,13 @@ import static org.mockito.Mockito.mock;
  */
 public class JcrMockServiceTest {
 
-    private JcrMockService mockService;
+    private static JcrMockService mockService;
 
-    private NodeFactory mockFactory;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @Before
-    public void beforeEachTest() throws RepositoryException, IOException {
+    @BeforeClass
+    public static void setup() throws RepositoryException, IOException
+    {
         NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
-        mockFactory = new MockNodeFactory(nodeTypeManager, new NodeTypeResolver());
+        NodeFactory mockFactory = new MockNodeFactory(nodeTypeManager, new NodeTypeResolver());
         mockService = new JsonMockService(mockFactory);
     }
 
@@ -56,23 +55,7 @@ public class JcrMockServiceTest {
         assertNodeContents(parentNode);
     }
 
-
-    /**
-     * /var/dam/digitalassetowningentities
-        /PRODID (as an example) --> uuid | 'null'
-            /digitalassets
-                /DIGITALASSETID
-                    /authoring | repurposed format
-                        /image <<JCR node>>
-                            /trustentity <<attribute, required>>
-                            /dataclassification <<attribute, default='bronze'>>
-                            /other attributes <<attribute>>
-                            /productcopy <<JCR node, optional>>
-                            /allowedentities <<path, optional>>
-                                /mmx (as an example) <<JCR node>>
-                                /gtm (as an example) <<JCR node>>
-    */
-    @Test
+   @Test
     public void shouldAddItemTypeInformationToNodeStructure() throws RepositoryException{
         String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
                 "                                                      view : 'type:String'," +
@@ -133,7 +116,7 @@ public class JcrMockServiceTest {
 
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void shouldReturnWorkingNodeIterator() throws RepositoryException {
         String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
                 "                                                      view : 'type:String'," +
@@ -156,11 +139,12 @@ public class JcrMockServiceTest {
 
         assertFalse("Should not have anymore nodes", childNodeIterator.hasNext());
 
-        exception.expect(NoSuchElementException.class);
         childNodeIterator.nextNode();
+
+        fail("An exception should have been thrown");
     }
 
-    @Test
+    @Test(expected = NoSuchElementException.class)
     public void iteratorShouldWorkWithNodesWithoutChildren() throws RepositoryException {
         String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
                 "                                                      view : 'type:String'," +
@@ -177,8 +161,8 @@ public class JcrMockServiceTest {
 
         assertFalse("Should not have children", anotherNodeIterator.hasNext());
 
-        exception.expect(NoSuchElementException.class);
         anotherNodeIterator.nextNode();
+        fail("An exception should have been thrown");
     }
 
     @Test

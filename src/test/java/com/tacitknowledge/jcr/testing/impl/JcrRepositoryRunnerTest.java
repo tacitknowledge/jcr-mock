@@ -21,13 +21,13 @@ import static org.junit.Assert.*;
 public class JcrRepositoryRunnerTest
 {
 
-    private static String repositoryConfigPath = "/jackrabbit/jackrabbit-transient.xml";
+    private static final String repositoryConfigPath = "/jackrabbit/jackrabbit-transient.xml";
 
-    private static String repositoryDirectoryPath = "/jackrabbit/repository";
+    private static final String repositoryDirectoryPath = "/jackrabbit/repository";
 
-    private static String userName = "admin";
+    private static final String userName = "admin";
 
-    private static String password = "admin";
+    private static final String password = "admin";
 
     @Test
     public void shouldCreateRepository() throws IOException, RepositoryException
@@ -48,7 +48,7 @@ public class JcrRepositoryRunnerTest
     }
 
     @Test
-    public void shouldGetValidJcrSession() throws Exception
+    public void shouldGetConsistentJcrSession() throws Exception
     {
          JcrRepositoryManager manager = new TransientRepositoryManager(repositoryConfigPath, repositoryDirectoryPath,
                 userName, password);

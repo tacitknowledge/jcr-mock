@@ -1,20 +1,16 @@
 package com.tacitknowledge.jcr.mocking.domain;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import javax.jcr.PropertyType;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
 public class PropertyDefinitionMapTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldReturnCorrectPropertyType() {
@@ -26,14 +22,15 @@ public class PropertyDefinitionMapTest {
         assertEquals("Expecting Binary Type", PropertyType.BINARY, propertyType);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionForUnsupportedPropertyTypes() {
         String valueString = "type:File";
 
         PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(valueString);
 
-        expectedException.expect(IllegalArgumentException.class);
         propertyDefinitionMap.getType();
+
+        fail("An exception was expected");
     }
 
     @Test

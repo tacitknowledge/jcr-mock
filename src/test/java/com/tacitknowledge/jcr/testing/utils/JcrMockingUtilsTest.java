@@ -1,7 +1,7 @@
 package com.tacitknowledge.jcr.testing.utils;
 
 import com.tacitknowledge.jcr.testing.impl.TransientRepositoryManager;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.jcr.Binary;
@@ -12,9 +12,7 @@ import javax.jcr.nodetype.NodeTypeManager;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,9 +22,9 @@ import static org.mockito.Mockito.when;
  */
 public class JcrMockingUtilsTest {
 
-    private NodeTypeManager nodeTypeManager;
+    private static NodeTypeManager nodeTypeManager;
 
-    InputStream assetsJsonFile = null;
+    private InputStream assetsJsonFile;
 
     private String jsonNodeHierarchy =
             "{parentNode: " +
@@ -44,11 +42,10 @@ public class JcrMockingUtilsTest {
             "}";
 
 
-    @Before
-    public void setup() throws Exception
+    @BeforeClass
+    public static void setup() throws Exception
     {
         nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
-        assetsJsonFile = getClass().getResourceAsStream("/assets.json");
     }
 
     @Test
@@ -78,6 +75,7 @@ public class JcrMockingUtilsTest {
     @Test(expected = RuntimeException.class)
     public void shouldNotCreateNodesFromJsonFileIfARepositoryErrorHappens() throws RepositoryException, IOException
     {
+        assetsJsonFile = getClass().getResourceAsStream("/assets.json");
         NodeTypeManager mockNodeTypeManager = mock(NodeTypeManager.class);
         when(mockNodeTypeManager.getNodeType(anyString())).thenThrow(new RepositoryException());
         JcrMockingUtils.createNodesFromJsonFile(mockNodeTypeManager, assetsJsonFile);
@@ -88,6 +86,7 @@ public class JcrMockingUtilsTest {
     public void shouldCreateNodeStructureFromJsonFile() throws RepositoryException, IOException
     {
 
+        assetsJsonFile = getClass().getResourceAsStream("/assets.json");
         Node rootNode = JcrMockingUtils.createNodesFromJsonFile(nodeTypeManager, assetsJsonFile);
 
         assertNotNull(rootNode);

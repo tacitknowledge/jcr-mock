@@ -3,10 +3,8 @@ package com.tacitknowledge.jcr.testing.impl;
 import com.tacitknowledge.jcr.testing.utils.JcrTestingUtils;
 import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -31,15 +29,12 @@ import static org.mockito.Mockito.when;
  */
 public class MockNodeFactoryTest {
 
-    private MockNodeFactory nodeFactory;
+    private static MockNodeFactory nodeFactory;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
-    @Before
-    public void beforeEachTest() throws RepositoryException, IOException {
+   @BeforeClass
+   public static void setup() throws RepositoryException, IOException {
         NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
-        this.nodeFactory = new MockNodeFactory(nodeTypeManager, new NodeTypeResolver());
+        nodeFactory = new MockNodeFactory(nodeTypeManager, new NodeTypeResolver());
     }
 
     @Test
@@ -85,12 +80,12 @@ public class MockNodeFactoryTest {
         fail("A runtime exception should have been thrown");
     }
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void shouldThrowRuntimeExceptionIfNodeTypeDoesNotExist() throws RepositoryException {
         Node parentNode = mock(Node.class);
 
-        expectedException.expect(RuntimeException.class);
         nodeFactory.createNode(parentNode, "invalid", "nt:doesntExist");
+        fail("An exception was expected!");
     }
 
     @Test
