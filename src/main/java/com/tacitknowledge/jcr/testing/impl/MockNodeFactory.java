@@ -71,7 +71,6 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         }
 
         return childNode;
-
     }
 
     @Override
@@ -79,7 +78,6 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         Node childNode = mock(Node.class);
         when(childNode.getName()).thenReturn(name);
         when(childNode.isNode()).thenReturn(true);
-
         return childNode;
     }
 

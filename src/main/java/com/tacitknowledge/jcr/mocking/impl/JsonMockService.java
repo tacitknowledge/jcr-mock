@@ -37,6 +37,13 @@ public class JsonMockService implements JcrMockService {
         return buildChildNodes(jsonNodeObject, null);
     }
 
+    /**
+     * Builds nodes from the given JSON object as children of the given parent
+     * @param parentJsonObject JsonObject to create the children from
+     * @param parent Parent node
+     * @return Parent node
+     * @throws RepositoryException If a repository error happens
+     */
     private Node buildChildNodes(JsonObject parentJsonObject, Node parent) throws RepositoryException {
         Node childNode;
         List<Node> childNodes = new ArrayList<Node>();

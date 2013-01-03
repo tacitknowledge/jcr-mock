@@ -9,7 +9,7 @@ import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 
 /**
- * Interface for Node Factory classes
+ * Common interface for Node Factories
  *
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
@@ -23,8 +23,21 @@ public interface NodeFactory {
 
     Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException;
 
+    /**
+     * Creates a mock node as a child of the given parent
+     * @param parent Parent for the new node
+     * @param name Node name
+     * @return Node
+     * @throws RepositoryException If a repository error happens
+     */
     Node createNode(Node parent, String name) throws RepositoryException;
 
+    /**
+     * Creates a mock node
+     * @param name Node name
+     * @return Node
+     * @throws RepositoryException If a repository error happens
+     */
     Node createNode(String name) throws RepositoryException;
 
     /**
