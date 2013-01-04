@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tacitknowledge</groupId>
     <artifactId>jcr-mock</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>JCR Mock</name>
     <description>Testing and mocking utilities for the JCR</description>
@@ -24,8 +24,10 @@
     </parent>
 
     <scm>
-        <url>git@github.com:tacitknowledge/jcr-mock.git/tags/0.1-SNAPSHOT</url>
-        <connection>git@github.com:tacitknowledge/jcr-mock.git/tags/0.1-SNAPSHOT</connection>
+        <connection>scm:git:https://github.com/tacitknowledge/jcr-mock.git</connection>
+        <developerConnection>scm:git:git@github.com:tacitknowledge/jcr-mock.git</developerConnection>
+        <url>https://github.com/tacitknowledge/jcr-mock</url>
+
     </scm>
     <developers>
         <developer>
