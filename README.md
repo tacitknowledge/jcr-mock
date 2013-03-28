@@ -110,8 +110,7 @@ Usage
     <dependency>
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
-        <version>0.1-SNAPSHOT</version>
-        <scope>test</scope>
+        <version>1.0</version>
     </dependency>
 ```
 
