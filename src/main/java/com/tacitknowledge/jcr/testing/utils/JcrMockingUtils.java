@@ -4,6 +4,7 @@ import com.tacitknowledge.jcr.mocking.JcrMockService;
 import com.tacitknowledge.jcr.mocking.impl.JsonMockService;
 import com.tacitknowledge.jcr.testing.NodeFactory;
 import com.tacitknowledge.jcr.testing.impl.MockNodeFactory;
+import com.tacitknowledge.jcr.testing.impl.TransientRepositoryManager;
 import org.apache.commons.io.IOUtils;
 
 import javax.jcr.Node;
@@ -42,4 +43,17 @@ public class JcrMockingUtils
         JcrMockService mockService = new JsonMockService(nodeFactory);
         return mockService.fromString(jsonFormattedString);
     }
+
+    public static Node createNodesFromJsonString(String jsonNodeDefinition) throws RepositoryException, IOException
+    {
+        NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
+        return createNodesFromJsonString(nodeTypeManager, jsonNodeDefinition);
+    }
+
+    public static Node createNodesFromJsonFile(InputStream assetsJsonFile) throws IOException, RepositoryException
+    {
+        NodeTypeManager nodeTypeManager = TransientRepositoryManager.createNodeTypeManager();
+        return createNodesFromJsonFile(nodeTypeManager, assetsJsonFile);
+    }
+
 }

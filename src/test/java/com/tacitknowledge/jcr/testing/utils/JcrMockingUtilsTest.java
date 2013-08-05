@@ -49,18 +49,17 @@ public class JcrMockingUtilsTest {
     }
 
     @Test
-    public void testCreateNodesFromString() throws Exception {
-
+    public void shouldCreateNodesFromString() throws Exception
+    {
         Node rootNode = JcrMockingUtils.createNodesFromJsonString(nodeTypeManager, jsonNodeHierarchy);
-        Node parentNode = rootNode.getNode("parentNode");
+        assertNodeHierarchy(rootNode);
+    }
 
-        assertNotNull("Expected parentNode not to be null");
-
-        Node fileNode = parentNode.getNode("childNode/myFile");
-        assertEquals("Expected nt:file", "nt:file", fileNode.getPrimaryNodeType().getName());
-
-        Binary binary = fileNode.getNode("jcr:content").getProperty("jcr:data").getBinary();
-        assertNotNull("Expected binary not to be null", binary);
+    @Test
+    public void shouldCreateNodesFromStringWithoutNodeTypeManager() throws Exception
+    {
+        Node rootNode = JcrMockingUtils.createNodesFromJsonString(jsonNodeHierarchy);
+        assertNodeHierarchy(rootNode);
     }
 
     @Test(expected = RuntimeException.class)
@@ -85,10 +84,22 @@ public class JcrMockingUtilsTest {
     @Test
     public void shouldCreateNodeStructureFromJsonFile() throws RepositoryException, IOException
     {
-
         assetsJsonFile = getClass().getResourceAsStream("/assets.json");
         Node rootNode = JcrMockingUtils.createNodesFromJsonFile(nodeTypeManager, assetsJsonFile);
+        assertFileNodeHierarchy(rootNode);
+    }
 
+    @Test
+    public void shouldCreateNodeStructureFromJsonFileWithoutNodeTypeManager() throws RepositoryException, IOException
+    {
+        assetsJsonFile = getClass().getResourceAsStream("/assets.json");
+        Node rootNode = JcrMockingUtils.createNodesFromJsonFile(assetsJsonFile);
+        assertFileNodeHierarchy(rootNode);
+    }
+
+
+    private void assertFileNodeHierarchy(Node rootNode) throws RepositoryException
+    {
         assertNotNull(rootNode);
 
         Node assetsNode = rootNode.getNode("digitalAsset");
@@ -99,6 +110,18 @@ public class JcrMockingUtilsTest {
 
         Node binaryNode = assetsNode.getNode("binary");
         assertNotNull("Expected a non null binary", binaryNode.getProperty("jcr:content").getBinary());
+    }
 
+    private void assertNodeHierarchy(Node rootNode) throws RepositoryException
+    {
+        Node parentNode = rootNode.getNode("parentNode");
+
+        assertNotNull("Expected parentNode not to be null", parentNode);
+
+        Node fileNode = parentNode.getNode("childNode/myFile");
+        assertEquals("Expected nt:file", "nt:file", fileNode.getPrimaryNodeType().getName());
+
+        Binary binary = fileNode.getNode("jcr:content").getProperty("jcr:data").getBinary();
+        assertNotNull("Expected binary not to be null", binary);
     }
 }
