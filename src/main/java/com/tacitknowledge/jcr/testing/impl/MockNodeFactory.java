@@ -3,7 +3,6 @@ package com.tacitknowledge.jcr.testing.impl;
 import com.tacitknowledge.jcr.testing.AbstractNodeFactory;
 import com.tacitknowledge.jcr.testing.NodeFactory;
 import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
-import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -106,8 +105,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
 
     @Override
     public void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException {
-        NodeIteratorAdapter nodeIteratorAdapter;
-        nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
+        NodeIteratorAdapter nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
         when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
     }
 

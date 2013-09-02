@@ -1,7 +1,6 @@
 package com.tacitknowledge.jcr.testing.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.JcrConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +27,8 @@ public class NodeTypeMapper{
     private static Map<String, Map<String,String>> parentToChildNodeTypeMap = new HashMap<String, Map<String,String>>();
 
     static{
-        parentToChildNodeTypeMap.put(JcrConstants.NT_FILE, new HashMap<String,String>(){{
-            put(JcrConstants.JCR_CONTENT, JcrConstants.NT_RESOURCE);
+        parentToChildNodeTypeMap.put("nt:file", new HashMap<String,String>(){{
+            put("jcr:content", "nt:resource");
         }});
     }
 

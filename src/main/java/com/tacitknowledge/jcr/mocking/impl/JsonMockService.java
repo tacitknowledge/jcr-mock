@@ -26,8 +26,8 @@ public class JsonMockService implements JcrMockService {
     }
 
     @Override
-    public Node fromString(Node parentNode, String nodeDefinition) throws RepositoryException {
-        JsonObject object = parseJson(nodeDefinition);
+    public Node fromString(Node parentNode, String jsonNodeStructure) throws RepositoryException {
+        JsonObject object = parseJson(jsonNodeStructure);
         return buildChildNodes(object, parentNode);
     }
 
