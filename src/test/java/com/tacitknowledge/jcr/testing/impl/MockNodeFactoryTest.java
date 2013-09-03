@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class MockNodeFactoryTest {
 
+    public static final String PROPERTY_NAME = "Name";
     private NodeTypeManager nodeTypeManager;
     private MockNodeFactory nodeFactory;
     private Node parent;
@@ -38,7 +39,7 @@ public class MockNodeFactoryTest {
         property = mock(Property.class);
         propertyDefinition = mock(PropertyDefinition.class);
 
-        when(propertyDefinition.getName()).thenReturn("Name");
+        when(propertyDefinition.getName()).thenReturn(PROPERTY_NAME);
         when(propertyDefinition.getRequiredType()).thenReturn(1);
     }
 
@@ -80,7 +81,6 @@ public class MockNodeFactoryTest {
 
     @Test
     public void shouldCreateNodeWithNullNodeType() throws RepositoryException {
-
         NodeType nodeType = null;
         Node childNode = nodeFactory.createNode(parent, name, nodeType);
         assertNotNull(childNode);
@@ -116,9 +116,10 @@ public class MockNodeFactoryTest {
         Value[] defaultValues = null;
         when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
         nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty("Name");
+        Property actualProperty = parent.getProperty(PROPERTY_NAME);
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
+        assertTrue(parent.hasProperty(PROPERTY_NAME));
     }
 
     @Test
@@ -127,10 +128,11 @@ public class MockNodeFactoryTest {
         Value[] defaultValues = {value};
         when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
         nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty("Name");
+        Property actualProperty = parent.getProperty(PROPERTY_NAME);
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
         assertEquals(value, actualProperty.getValue());
+        assertTrue(parent.hasProperty(PROPERTY_NAME));
     }
 
     @Test
@@ -138,9 +140,10 @@ public class MockNodeFactoryTest {
         Value[] defaultValues = {};
         when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
         nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty("Name");
+        Property actualProperty = parent.getProperty(PROPERTY_NAME);
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
+        assertTrue(parent.hasProperty(PROPERTY_NAME));
     }
 
     @Test
@@ -149,11 +152,12 @@ public class MockNodeFactoryTest {
         when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
         when(propertyDefinition.isMultiple()).thenReturn(true);
         nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty("Name");
+        Property actualProperty = parent.getProperty(PROPERTY_NAME);
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
         assertTrue(actualProperty.isMultiple());
         assertEquals(defaultValues, actualProperty.getValues());
+        assertTrue(parent.hasProperty(PROPERTY_NAME));
     }
 
     @Test

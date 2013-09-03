@@ -86,6 +86,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         Property property = mock(Property.class);
 
         when(parentNode.getProperty(propertyName)).thenReturn(property);
+        when(parentNode.hasProperty(propertyName)).thenReturn(true);
         when(property.getType()).thenReturn(propertyType);
 
         Value[] defaultValues = propertyDefinition.getDefaultValues();
