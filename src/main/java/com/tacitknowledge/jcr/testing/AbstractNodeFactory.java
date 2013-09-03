@@ -14,11 +14,9 @@ import javax.jcr.nodetype.PropertyDefinition;
 */
 public abstract class AbstractNodeFactory implements NodeFactory {
     private NodeTypeManager nodeTypeManager;
-    private NodeTypeResolver nodeTypeResolver;
 
-    public AbstractNodeFactory(NodeTypeManager nodeTypeManager, NodeTypeResolver nodeTypeResolver) {
+    public AbstractNodeFactory(NodeTypeManager nodeTypeManager) {
         this.nodeTypeManager = nodeTypeManager;
-        this.nodeTypeResolver = nodeTypeResolver;
     }
 
     public Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException {
@@ -40,7 +38,7 @@ public abstract class AbstractNodeFactory implements NodeFactory {
         NodeDefinition[] nodeDefinitions = nodeType.getChildNodeDefinitions();
         for(NodeDefinition nodeDefinition: nodeDefinitions){
             String nodeDefinitionName = nodeDefinition.getName();
-            String primaryTypeName = nodeTypeResolver.resolvePrimaryType(nodeDefinition);
+            String primaryTypeName = NodeTypeResolver.resolvePrimaryType(nodeDefinition);
             createNode(childNode, nodeDefinitionName, primaryTypeName);
         }
         return childNode;

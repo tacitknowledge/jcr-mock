@@ -2,7 +2,6 @@ package com.tacitknowledge.jcr.testing.impl;
 
 import com.tacitknowledge.jcr.testing.AbstractNodeFactory;
 import com.tacitknowledge.jcr.testing.NodeFactory;
-import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -27,8 +26,8 @@ import static org.mockito.Mockito.when;
  */
 public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory {
 
-    public MockNodeFactory(NodeTypeManager nodeTypeManager, NodeTypeResolver nodeTypeResolver) {
-        super(nodeTypeManager, nodeTypeResolver);
+    public MockNodeFactory(NodeTypeManager nodeTypeManager) {
+        super(nodeTypeManager);
     }
 
     @Override
@@ -122,7 +121,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
                 createBinaryValueFor(property, returnValue, valueStr);
                 break;
             case PropertyType.BOOLEAN:
-                createBooleanValueFor(returnValue, valueStr);
+                createBooleanValueFor(property, returnValue, valueStr);
                 break;
             case PropertyType.DOUBLE:
                 createDoubleValueFor(property, returnValue, valueStr);
@@ -170,8 +169,9 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         when(returnValue.getString()).thenReturn(valueStr);
     }
 
-    private void createBooleanValueFor(Value returnValue, String valueStr) throws RepositoryException {
+    private void createBooleanValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
         Boolean booleanVal = Boolean.valueOf(valueStr);
+        when(property.getBoolean()).thenReturn(booleanVal);
         when(returnValue.getBoolean()).thenReturn(booleanVal);
     }
 
