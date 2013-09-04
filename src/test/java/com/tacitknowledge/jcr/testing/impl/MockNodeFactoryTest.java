@@ -6,7 +6,6 @@ import org.junit.Test;
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.when;
 public class MockNodeFactoryTest {
 
     public static final String PROPERTY_NAME = "Name";
-    private NodeTypeManager nodeTypeManager;
     private MockNodeFactory nodeFactory;
     private Node parent;
     private String name;
@@ -30,8 +28,7 @@ public class MockNodeFactoryTest {
 
     @Before
     public void setUp() throws Exception {
-        nodeTypeManager = mock(NodeTypeManager.class);
-        nodeFactory = new MockNodeFactory(nodeTypeManager);
+        nodeFactory = new MockNodeFactory();
         parent = mock(Node.class);
         name = "name";
         propertyValue = "propertyValue";
@@ -240,8 +237,6 @@ public class MockNodeFactoryTest {
         NodeDefinition[] emptyDefinitions = new NodeDefinition[]{};
 
         when(nodeType.getPropertyDefinitions()).thenReturn(propertyDefinitions);
-        when(nodeTypeManager.getNodeType("nodeType")).thenReturn(nodeType);
-        when(nodeTypeManager.getNodeType("primary")).thenReturn(nodeType);
         when(nodeDefinition.getDeclaringNodeType()).thenReturn(mockNodeType);
         when(nodeDefinition.getRequiredPrimaryTypeNames()).thenReturn(primaryTypeNames);
         when(nodeType.getChildNodeDefinitions()).thenReturn(nodeDefinitions).thenReturn(emptyDefinitions);
@@ -249,17 +244,5 @@ public class MockNodeFactoryTest {
         Node childNode = nodeFactory.createNode(parent, name, "nodeType");
 
         assertNotNull(childNode);
-    }
-
-    @Test
-    public void shouldThrowExceptionIfRepositoryExceptionOccurs() throws RepositoryException {
-        RepositoryException repositoryException = mock(RepositoryException.class);
-        when(nodeTypeManager.getNodeType("nodeType")).thenThrow(repositoryException);
-        try {
-            nodeFactory.createNode(parent, name, "nodeType");
-            fail("Should have thrown runtime exception");
-        } catch (RuntimeException re) {
-            //should throw this exception
-        }
     }
 }

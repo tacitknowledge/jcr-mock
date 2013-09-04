@@ -57,7 +57,7 @@ public class JsonMockService implements JcrMockService {
             JsonElement childElement = childEntry.getValue();
             if(childElement.isJsonObject()){
                 JsonObject childJsonObject = childElement.getAsJsonObject();
-                JsonElement nodeTypeElement = childJsonObject.get(NodeFactory.NODE_TYPE);
+                JsonElement nodeTypeElement = childJsonObject.get(NodeFactory.JCR_PRIMARY_TYPE);
                 if(nodeTypeElement != null ){
                     String nodeType = nodeTypeElement.getAsString();
                     childNode = nodeFactory.createNode(parent, childElementName, nodeType);
@@ -71,9 +71,7 @@ public class JsonMockService implements JcrMockService {
                 PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(childElementValue);
                 int propertyType = propertyDefinitionMap.getType();
                 String propertyValue = propertyDefinitionMap.getValue();
-                if(!NodeFactory.NODE_TYPE.equals(childElementName)){
                     nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
-                }
             }
         }
         nodeFactory.createIteratorFor(parent, childNodes);
