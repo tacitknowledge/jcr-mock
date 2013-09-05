@@ -53,6 +53,7 @@ public class MockNodeFactory implements NodeFactory {
         when(property.getSession()).thenReturn(session);
         when(parent.getSession()).thenReturn(session);
         when(parent.hasProperty(name)).thenReturn(true);
+        when(parent.hasProperties()).thenReturn(true);
     }
 
     @Override
@@ -97,6 +98,7 @@ public class MockNodeFactory implements NodeFactory {
 
         when(parentNode.getProperty(propertyName)).thenReturn(property);
         when(parentNode.hasProperty(propertyName)).thenReturn(true);
+        when(parentNode.hasProperties()).thenReturn(true);
         when(property.getType()).thenReturn(propertyType);
         when(parentNode.getSession()).thenReturn(session);
         when(property.getSession()).thenReturn(session);

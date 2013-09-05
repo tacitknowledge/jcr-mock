@@ -50,6 +50,7 @@ public class MockNodeFactoryTest {
         assertEquals(propertyType, property.getType());
         assertEquals(name, property.getName());
         assertTrue(parent.hasProperty(name));
+        assertTrue(parent.hasProperties());
 
         Value value = property.getValue();
         assertEquals(propertyValue, value.getString());
@@ -64,6 +65,7 @@ public class MockNodeFactoryTest {
 
         assertNotNull(property.getValue());
         assertTrue(parent.hasProperty(name));
+        assertTrue(parent.hasProperties());
         assertNotNull(property.getSession());
     }
 
@@ -77,6 +79,7 @@ public class MockNodeFactoryTest {
 
         assertEquals(value, property.getValue());
         assertTrue(parent.hasProperty(name));
+        assertTrue(parent.hasProperties());
         assertNotNull(property.getSession());
 
     }
