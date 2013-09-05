@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface NodeFactory {
 
-    String NODE_TYPE = "nodeType";
+    String JCR_PRIMARY_TYPE = "jcr:primaryType";
 
     void createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException;
 
