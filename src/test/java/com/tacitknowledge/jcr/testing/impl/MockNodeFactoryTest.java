@@ -49,6 +49,7 @@ public class MockNodeFactoryTest {
         assertNotNull(property);
         assertEquals(propertyType, property.getType());
         assertEquals(name, property.getName());
+        assertTrue(parent.hasProperty(name));
 
         Value value = property.getValue();
         assertEquals(propertyValue, value.getString());
@@ -62,6 +63,7 @@ public class MockNodeFactoryTest {
         nodeFactory.createProperty(parent, name, propertyValue, propertyType);
 
         assertNotNull(property.getValue());
+        assertTrue(parent.hasProperty(name));
     }
 
     @Test
@@ -73,6 +75,7 @@ public class MockNodeFactoryTest {
         nodeFactory.createProperty(parent, name, propertyValue, propertyType);
 
         assertEquals(value, property.getValue());
+        assertTrue(parent.hasProperty(name));
 
     }
 

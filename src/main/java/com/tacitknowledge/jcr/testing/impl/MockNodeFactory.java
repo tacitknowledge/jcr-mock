@@ -48,6 +48,8 @@ public class MockNodeFactory implements NodeFactory {
         } else if (property.getValue() == null) {
             createValue(property, propertyValue, propertyType);
         }
+
+        when(parent.hasProperty(name)).thenReturn(true);
     }
 
     @Override
