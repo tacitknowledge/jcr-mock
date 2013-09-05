@@ -110,7 +110,7 @@ Usage
     <dependency>
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </dependency>
 ```
 
@@ -153,15 +153,7 @@ Supported Functionality
 
 ### Node Types and Property Types
 
-An important feature for this framework is the ability to create node structures based on node types, this allows to create
-make our JSON much more concise.
-
-*  JCR Node Types are supported by use of a the 'nodeType' special property keyword.  For example:
-```
-    myNode: {
-        nodeType : 'nt:file'
-    }
-```
+*  Node Types need to be explicitly declared via the jcr:primaryType property.
 
 *  JSON Properties can contain the JCR Property Type information included in the value as well, for example:
 ```
@@ -175,6 +167,7 @@ make our JSON much more concise.
 ```
 
 *  If no type information is included in the property value, it will default as a String property.
+
 *  If no property value information can be determined, the following happens:
     *  If it's a String, the default is an empty string.
     *  If it's a number, date or binary, an exception is thrown.
@@ -186,6 +179,7 @@ make our JSON much more concise.
     myFile : "type:Binary, value:/path/to/file.jpg"
 ```
 *  If the path to the binary doesn't exist an exception will be thrown.
+
 *  For Date properties the supported format is "MM/DD/YYYY":
 ```
     dateOfBirth : "type:Date, value:09/24/1982"
@@ -228,6 +222,12 @@ make our JSON much more concise.
     Node a = c.getParent().getParent();
 ```
 
+WHAT'S NEW?
+-----------
+
+* Support for node.hasProperty, node.hasProperties, node.getSession and property.getSession methods.
+* Removed jackrabbit dependencies.
+
 
 TODOs
 -----
@@ -235,8 +235,3 @@ TODOs
 *  Currently, only mocking of nodes is supported (via _MockNodeFactory_).  However, it's possible to extend the framework
    to support writing of nodes to a real repository (for example, a _TransientRepository_) by extending from
    _AbstractNodeFactory_ and implementing the required methods.
-
-*  The framework requires of a _NodeTypeManager_ in order to determine a node structure based on a give node type
-   (e.g. nt:file).  For convenience, we're instantiating a TransientRepository and obtaining the node type manager via the
-   _session.getWorkspace().getNodeTypeManager()_ method.  However, the ideal would be that the framework does not depend
-   on a _TransientRepository_.
