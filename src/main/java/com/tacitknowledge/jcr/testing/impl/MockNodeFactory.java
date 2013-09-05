@@ -24,6 +24,8 @@ import static org.mockito.Mockito.when;
  */
 public class MockNodeFactory implements NodeFactory {
 
+    private Session session = mock(Session.class);
+
     public Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException {
 
         NodeType nodeType = mock(NodeType.class);
@@ -48,7 +50,8 @@ public class MockNodeFactory implements NodeFactory {
         } else if (property.getValue() == null) {
             createValue(property, propertyValue, propertyType);
         }
-
+        when(property.getSession()).thenReturn(session);
+        when(parent.getSession()).thenReturn(session);
         when(parent.hasProperty(name)).thenReturn(true);
     }
 
@@ -59,6 +62,7 @@ public class MockNodeFactory implements NodeFactory {
             when(childNode.isNodeType(nodeType.getName())).thenReturn(true); // Default node type
             when(childNode.getPrimaryNodeType()).thenReturn(nodeType);
         }
+        when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
 
@@ -73,7 +77,7 @@ public class MockNodeFactory implements NodeFactory {
             when(childNode.getParent()).thenReturn(parent);
             buildParentHierarchy(parent, childNode, name);
         }
-
+        when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
 
@@ -94,6 +98,8 @@ public class MockNodeFactory implements NodeFactory {
         when(parentNode.getProperty(propertyName)).thenReturn(property);
         when(parentNode.hasProperty(propertyName)).thenReturn(true);
         when(property.getType()).thenReturn(propertyType);
+        when(parentNode.getSession()).thenReturn(session);
+        when(property.getSession()).thenReturn(session);
 
         Value[] defaultValues = propertyDefinition.getDefaultValues();
 
@@ -106,12 +112,14 @@ public class MockNodeFactory implements NodeFactory {
                 when(property.getValue()).thenReturn(value);
             }
         }
+
     }
 
     @Override
     public void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException {
         NodeIteratorAdapter nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
         when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
+        when(parent.getSession()).thenReturn(session);
     }
 
     @Override
@@ -141,6 +149,8 @@ public class MockNodeFactory implements NodeFactory {
                 createStringValueFor(property, returnValue, valueStr);
                 break;
         }
+
+        when(property.getSession()).thenReturn(session);
         return returnValue;
     }
 

@@ -64,6 +64,7 @@ public class MockNodeFactoryTest {
 
         assertNotNull(property.getValue());
         assertTrue(parent.hasProperty(name));
+        assertNotNull(property.getSession());
     }
 
     @Test
@@ -76,6 +77,7 @@ public class MockNodeFactoryTest {
 
         assertEquals(value, property.getValue());
         assertTrue(parent.hasProperty(name));
+        assertNotNull(property.getSession());
 
     }
 
@@ -84,6 +86,7 @@ public class MockNodeFactoryTest {
         NodeType nodeType = null;
         Node childNode = nodeFactory.createNode(parent, name, nodeType);
         assertNotNull(childNode);
+        assertNotNull(childNode.getSession());
     }
 
     @Test
@@ -93,6 +96,8 @@ public class MockNodeFactoryTest {
         assertTrue(childNode.isNodeType(nodeType.getName()));
         assertEquals(nodeType, childNode.getPrimaryNodeType());
         assertNotNull(childNode);
+        assertNotNull(childNode.getSession());
+
     }
 
     @Test
@@ -101,6 +106,7 @@ public class MockNodeFactoryTest {
         assertNotNull(childNode);
         assertEquals(name, childNode.getName());
         assertTrue(childNode.isNode());
+        assertNotNull(childNode.getSession());
     }
 
     @Test
@@ -109,6 +115,7 @@ public class MockNodeFactoryTest {
         when(parent.getNode(name)).thenReturn(childNode);
         Node actual = nodeFactory.createNode(parent, name);
         assertEquals(childNode, actual);
+        assertNotNull(actual.getSession());
     }
 
     @Test
@@ -120,6 +127,7 @@ public class MockNodeFactoryTest {
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
         assertTrue(parent.hasProperty(PROPERTY_NAME));
+        assertNotNull(actualProperty.getSession());
     }
 
     @Test
@@ -133,6 +141,10 @@ public class MockNodeFactoryTest {
         assertEquals(1, actualProperty.getType());
         assertEquals(value, actualProperty.getValue());
         assertTrue(parent.hasProperty(PROPERTY_NAME));
+        assertNotNull(parent.getSession());
+        assertNotNull(actualProperty.getSession());
+        assertEquals(parent.getSession(), actualProperty.getSession());
+
     }
 
     @Test
@@ -144,6 +156,9 @@ public class MockNodeFactoryTest {
         assertNotNull(actualProperty);
         assertEquals(1, actualProperty.getType());
         assertTrue(parent.hasProperty(PROPERTY_NAME));
+        assertNotNull(parent.getSession());
+        assertNotNull(actualProperty.getSession());
+        assertEquals(parent.getSession(), actualProperty.getSession());
     }
 
     @Test
@@ -158,6 +173,10 @@ public class MockNodeFactoryTest {
         assertTrue(actualProperty.isMultiple());
         assertEquals(defaultValues, actualProperty.getValues());
         assertTrue(parent.hasProperty(PROPERTY_NAME));
+        assertNotNull(parent.getSession());
+        assertNotNull(actualProperty.getSession());
+        assertEquals(parent.getSession(), actualProperty.getSession());
+
     }
 
     @Test
@@ -165,6 +184,7 @@ public class MockNodeFactoryTest {
         List<Node> childNodes = new ArrayList<Node>();
         nodeFactory.createIteratorFor(parent, childNodes);
         assertNotNull(parent.getNodes());
+        assertNotNull(parent.getSession());
     }
 
     @Test
@@ -173,24 +193,31 @@ public class MockNodeFactoryTest {
         nodeFactory.createValueFor(property, "/files/air_jordan.jpg", PropertyType.BINARY);
 
         assertNotNull(property.getBinary());
+        assertNotNull(property.getSession());
     }
 
     @Test
     public void shouldCreateBooleanValue() throws RepositoryException {
         nodeFactory.createValueFor(property, "true", PropertyType.BOOLEAN);
         assertTrue(property.getBoolean());
+        assertNotNull(property.getSession());
+
     }
 
     @Test
     public void shouldCreateDoubleValue() throws RepositoryException {
         nodeFactory.createValueFor(property, "1.0", PropertyType.DOUBLE);
         assertEquals(1.0, property.getDouble());
+        assertNotNull(property.getSession());
+
     }
 
     @Test
     public void shouldCreateDecimalValue() throws RepositoryException {
         nodeFactory.createValueFor(property, "1.01", PropertyType.DECIMAL);
         assertEquals(new BigDecimal("1.01"), property.getDecimal());
+        assertNotNull(property.getSession());
+
     }
 
     @Test
@@ -198,6 +225,8 @@ public class MockNodeFactoryTest {
         nodeFactory.createValueFor(property, "12/12/2012", PropertyType.DATE);
         assertNotNull(property.getDate());
         assertNotNull(property.getString());
+        assertNotNull(property.getSession());
+
     }
 
     @Test
@@ -247,5 +276,7 @@ public class MockNodeFactoryTest {
         Node childNode = nodeFactory.createNode(parent, name, "nodeType");
 
         assertNotNull(childNode);
+        assertNotNull(childNode.getSession());
+
     }
 }
