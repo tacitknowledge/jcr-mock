@@ -5,7 +5,7 @@
         contentType : "photography",
         resolution : '300ppi',
         binary : {
-            nodeType : "nt:file",
+            'jcr:primaryType' : "nt:file",
             "jcr:content" : "type:Binary, value:/files/air_jordan.jpg"
         }
     }

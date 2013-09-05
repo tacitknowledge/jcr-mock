@@ -1,13 +1,9 @@
 package com.tacitknowledge.jcr.testing.impl;
 
-import com.tacitknowledge.jcr.testing.AbstractNodeFactory;
 import com.tacitknowledge.jcr.testing.NodeFactory;
-import com.tacitknowledge.jcr.testing.utils.NodeTypeResolver;
-import org.apache.jackrabbit.commons.iterator.NodeIteratorAdapter;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -26,16 +22,24 @@ import static org.mockito.Mockito.when;
  *
  * @author Daniel Valencia (daniel@tacitknowledge.com)
  */
-public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory {
+public class MockNodeFactory implements NodeFactory {
 
-    public MockNodeFactory(NodeTypeManager nodeTypeManager, NodeTypeResolver nodeTypeResolver) {
-        super(nodeTypeManager, nodeTypeResolver);
+    private Session session = mock(Session.class);
+
+    public Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException {
+
+        NodeType nodeType = mock(NodeType.class);
+        when(nodeType.getName()).thenReturn(nodeTypeName);
+
+        Node childNode = createNode(parentNode, nodeName, nodeType);
+
+        return childNode;
     }
 
     @Override
     public void createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException {
         Property property = parent.getProperty(name);
-        if(property == null){
+        if (property == null) {
             property = mock(Property.class);
             Value value = createValueFor(property, propertyValue, propertyType);
             when(property.getValue()).thenReturn(value);
@@ -43,18 +47,22 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
             when(property.getName()).thenReturn(name);
             when(property.getType()).thenReturn(propertyType);
             when(parent.getProperty(name)).thenReturn(property);
-        } else if(property.getValue() == null){
+        } else if (property.getValue() == null) {
             createValue(property, propertyValue, propertyType);
         }
+        when(property.getSession()).thenReturn(session);
+        when(parent.getSession()).thenReturn(session);
+        when(parent.hasProperty(name)).thenReturn(true);
     }
 
     @Override
     public Node createNode(Node parent, String name, NodeType nodeType) throws RepositoryException {
         Node childNode = createNode(parent, name);
-        if(nodeType != null){
+        if (nodeType != null) {
             when(childNode.isNodeType(nodeType.getName())).thenReturn(true); // Default node type
             when(childNode.getPrimaryNodeType()).thenReturn(nodeType);
         }
+        when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
 
@@ -64,12 +72,12 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         if (parent != null) {
             childNode = parent.getNode(name);
         }
-        if(childNode == null){
+        if (childNode == null) {
             childNode = createNode(name);
             when(childNode.getParent()).thenReturn(parent);
             buildParentHierarchy(parent, childNode, name);
         }
-
+        when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
 
@@ -88,27 +96,30 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         Property property = mock(Property.class);
 
         when(parentNode.getProperty(propertyName)).thenReturn(property);
+        when(parentNode.hasProperty(propertyName)).thenReturn(true);
         when(property.getType()).thenReturn(propertyType);
+        when(parentNode.getSession()).thenReturn(session);
+        when(property.getSession()).thenReturn(session);
 
         Value[] defaultValues = propertyDefinition.getDefaultValues();
 
-        if(defaultValues != null){
-            if(propertyDefinition.isMultiple()){
+        if (defaultValues != null) {
+            if (propertyDefinition.isMultiple()) {
                 when(property.isMultiple()).thenReturn(true);
                 when(property.getValues()).thenReturn(defaultValues);
-            }
-            else if(defaultValues.length > 0){
+            } else if (defaultValues.length > 0) {
                 Value value = defaultValues[0];
                 when(property.getValue()).thenReturn(value);
             }
         }
+
     }
 
     @Override
     public void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException {
-        NodeIteratorAdapter nodeIteratorAdapter;
-        nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
+        NodeIteratorAdapter nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
         when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
+        when(parent.getSession()).thenReturn(session);
     }
 
     @Override
@@ -116,7 +127,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         Value returnValue = mock(Value.class);
         when(returnValue.getType()).thenReturn(valueType);
 
-        switch (valueType){
+        switch (valueType) {
             case PropertyType.STRING:
                 createStringValueFor(property, returnValue, valueStr);
                 break;
@@ -124,7 +135,7 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
                 createBinaryValueFor(property, returnValue, valueStr);
                 break;
             case PropertyType.BOOLEAN:
-                createBooleanValueFor(returnValue, valueStr);
+                createBooleanValueFor(property, returnValue, valueStr);
                 break;
             case PropertyType.DOUBLE:
                 createDoubleValueFor(property, returnValue, valueStr);
@@ -138,6 +149,8 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
                 createStringValueFor(property, returnValue, valueStr);
                 break;
         }
+
+        when(property.getSession()).thenReturn(session);
         return returnValue;
     }
 
@@ -172,8 +185,9 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
         when(returnValue.getString()).thenReturn(valueStr);
     }
 
-    private void createBooleanValueFor(Value returnValue, String valueStr) throws RepositoryException {
+    private void createBooleanValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
         Boolean booleanVal = Boolean.valueOf(valueStr);
+        when(property.getBoolean()).thenReturn(booleanVal);
         when(returnValue.getBoolean()).thenReturn(booleanVal);
     }
 
@@ -185,7 +199,8 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
     private void createBinaryValueFor(Property property, Value valueObject, String propertyValue) throws RepositoryException {
         InputStream binaryInputStream = getClass().getResourceAsStream(propertyValue);
 
-        if(binaryInputStream == null) throw new IllegalArgumentException("Path to binary doesn't exist: " + propertyValue);
+        if (binaryInputStream == null)
+            throw new IllegalArgumentException("Path to binary doesn't exist: " + propertyValue);
 
         Binary binary = mock(Binary.class);
         when(property.getBinary()).thenReturn(binary);
@@ -194,10 +209,10 @@ public class MockNodeFactory extends AbstractNodeFactory implements NodeFactory 
     }
 
     private void buildParentHierarchy(Node parent, Node childNode, String nodePath) throws RepositoryException {
-        if(parent != null){
+        if (parent != null) {
             when(parent.getNode(nodePath)).thenReturn(childNode);
             String parentName = parent.getName();
-            if(parentName != null){
+            if (parentName != null) {
                 buildParentHierarchy(parent.getParent(), childNode, parentName + "/" + nodePath);
             }
         }
