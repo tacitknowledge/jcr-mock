@@ -25,18 +25,32 @@ import static org.mockito.Mockito.mock;
 public class JcrMockServiceTest {
 
     private static JcrMockService mockService;
-    public static final String JSON_NODE_DEFINITION_WITH_NODE_TYPES = "{\n" +
-            "    ac2d111: {\n" +
-            "        trustEntity: 'type:String',\n" +
-            "        view: 'type:String',\n" +
-            "        binary: {\n" +
-            "            nodeType: 'nt:file',\n" +
-            "            'jcr:content': {\n" +
-            "                'jcr:data': 'type:Binary, value:/files/air_jordan.jpg'\n" +
-            "            }\n" +
-            "        }\n" +
-            "    }\n" +
-            "}";
+    public static final String JSON_NODE_DEFINITION_WITH_NODE_TYPES =
+                    "{" +
+                    "    ac2d111: {" +
+                    "        trustEntity: 'type:String'," +
+                    "        view: 'type:String'," +
+                    "        binary: {" +
+                    "            nodeType: 'nt:file'," +
+                    "            'jcr:content': {" +
+                    "                'jcr:data': 'type:Binary, value:/files/air_jordan.jpg'" +
+                    "            }" +
+                    "        }" +
+                    "    }" +
+                    "}";
+    public static final String JSON_NODE_DEFINITION_WITH_TWO_NODES =
+                    "{" +
+                    "    ac2d111: {" +
+                    "        trustEntity: 'type:String'," +
+                    "        view: 'type:String'," +
+                    "        binary: {" +
+                    "            nodeType: 'nt:file'" +
+                    "        }," +
+                    "        anotherNode: {" +
+                    "            attri: 'valueyes'" +
+                    "        }" +
+                    "    }" +
+                    "} ";
 
     @BeforeClass
     public static void setup() throws RepositoryException, IOException {
@@ -46,10 +60,14 @@ public class JcrMockServiceTest {
 
     @Test
     public void testJcrNodeServiceWithParentNode() throws RepositoryException {
-        String jsonNodeDefinition = "{content:{" +
-                "dpils:{testProperty: 'myvalue'}" +
-                "}" +
-                "}";
+        String jsonNodeDefinition =
+                        "{" +
+                        "    content: {" +
+                        "        dpils: {" +
+                        "            testProperty: 'myvalue'" +
+                        "        }" +
+                        "    }" +
+                        "}";
 
         Node parentNode = mock(Node.class);
         mockService.fromString(parentNode, jsonNodeDefinition);
@@ -115,14 +133,10 @@ public class JcrMockServiceTest {
 
     @Test(expected = NoSuchElementException.class)
     public void shouldReturnWorkingNodeIterator() throws RepositoryException {
-        String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
-                "                                                      view : 'type:String'," +
-                "                                                      binary : { nodeType : 'nt:file' }," +
-                "                                                      anotherNode: { attri: 'valueyes'} } } ";
 
         Node parentNode = mock(Node.class);
 
-        mockService.fromString(parentNode, jsonNodeDefinitionWithNodeTypes);
+        mockService.fromString(parentNode, JSON_NODE_DEFINITION_WITH_TWO_NODES);
 
         Node ac2d111Node = parentNode.getNode("ac2d111");
 
@@ -143,14 +157,11 @@ public class JcrMockServiceTest {
 
     @Test(expected = NoSuchElementException.class)
     public void iteratorShouldWorkWithNodesWithoutChildren() throws RepositoryException {
-        String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
-                "                                                      view : 'type:String'," +
-                "                                                      binary : { nodeType : 'nt:file' }," +
-                "                                                      anotherNode: { attri: 'valueyes'} } } ";
+
 
         Node parentNode = mock(Node.class);
 
-        mockService.fromString(parentNode, jsonNodeDefinitionWithNodeTypes);
+        mockService.fromString(parentNode, JSON_NODE_DEFINITION_WITH_TWO_NODES);
 
         Node ac2d111Node = parentNode.getNode("ac2d111");
 
@@ -164,13 +175,22 @@ public class JcrMockServiceTest {
 
     @Test
     public void shouldSetBinaryValue() throws RepositoryException {
-        String jsonNodeDefinitionWithNodeTypes = "{ac2d111 : { trustEntity : 'type:String'," +
-                "                                                      view : 'type:String'," +
-                "                                                      binary : { nodeType : 'nt:file'," +
-                "                                                                 'jcr:content':{" +
-                "                                                                    'jcr:data': 'type:Binary, value:/files/air_jordan.jpg'}" +
-                "                                                               }," +
-                "                                                      anotherNode: { attri: 'valueyes'} }} ";
+        String jsonNodeDefinitionWithNodeTypes = 
+                "{" +
+                "    ac2d111: {" +
+                "        trustEntity: 'type:String'," +
+                "        view: 'type:String'," +
+                "        binary: {" +
+                "            nodeType: 'nt:file'," +
+                "            'jcr:content': {" +
+                "                'jcr:data': 'type:Binary, value:/files/air_jordan.jpg'" +
+                "            }" +
+                "        }," +
+                "        anotherNode: {" +
+                "            attri: 'valueyes'" +
+                "        }" +
+                "    }" +
+                "} ";
 
         Node parentNode = mock(Node.class);
 
@@ -191,22 +211,21 @@ public class JcrMockServiceTest {
 
     @Test
     public void shouldCreateNodeStructureWithoutPassingAParentNode() throws RepositoryException {
-        String jsonNodeStructure = "{products: " +
-                "{ productA:" +
+        String jsonNodeStructure =
                 "{" +
-                "name: 'Air Jordan'," +
-                "confidentiality: 'Bronze'," +
-                "digitalAssets: " +
-                "{" +
-                "asset1: " +
-                "{" +
-                "mimeType: 'jpg'," +
-                "contentType: 'photography'," +
-                "binary: 'type:Binary, value:/files/air_jordan.jpg'" +
-                "}" +
-                "}" +
-                "}" +
-                "}" +
+                "    products: {" +
+                "        productA: {" +
+                "            name: 'Air Jordan'," +
+                "            confidentiality: 'Bronze'," +
+                "            digitalAssets: {" +
+                "                asset1: {" +
+                "                    mimeType: 'jpg'," +
+                "                    contentType: 'photography'," +
+                "                    binary: 'type:Binary, value:/files/air_jordan.jpg'" +
+                "                }" +
+                "            }" +
+                "        }" +
+                "    }" +
                 "}";
 
         Node rootNode = mockService.fromString(jsonNodeStructure);
