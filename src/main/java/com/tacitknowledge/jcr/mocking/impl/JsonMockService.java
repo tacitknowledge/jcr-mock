@@ -71,7 +71,7 @@ public class JsonMockService implements JcrMockService {
                 PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(childElementValue);
                 int propertyType = propertyDefinitionMap.getType();
                 String propertyValue = propertyDefinitionMap.getValue();
-                    nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
+                nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
             }
         }
         nodeFactory.createIteratorFor(parent, childNodes);
