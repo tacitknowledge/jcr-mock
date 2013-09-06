@@ -1,5 +1,4 @@
-JCR Mock [![Build
-Status](https://travis-ci.org/tacitknowledge/jcr-mock.png?branch=master)](https://travis-ci.org/tacitknowledge/jcr-mock)
+JCR Mock [![Build Status](https://travis-ci.org/tacitknowledge/jcr-mock.png?branch=master)](https://travis-ci.org/tacitknowledge/jcr-mock)
 ========
 
 A JCR node mocking library.
