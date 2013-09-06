@@ -222,11 +222,14 @@ Supported Functionality
     Node a = c.getParent().getParent();
 ```
 
-WHAT'S NEW?
------------
+Change Log
+----------
 
-* Support for node.hasProperty, node.hasProperties, node.getSession and property.getSession methods.
-* Removed jackrabbit dependencies.
+* 2.0.0 - September 6, 2013
+  * Support for node.hasProperty, node.hasProperties, node.getSession and property.getSession methods.
+  * Removed jackrabbit dependencies.
+* 1.0.0 - December 11, 2012
+  * Initial release
 
 
 TODOs
