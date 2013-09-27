@@ -235,6 +235,10 @@ Change Log
 TODOs
 -----
 
+*  Add support for retrieval of nested properties (e.g. node.getProperty("jcr:content/myProperty")).
+*  Add support for node.getPath() method.
+*  Fix the following bugs:
+   *  node.getProperty("jcr:primaryType") does not work (workaround is to do node.getPrimaryNodeType() or use node.isNodeType()).  
 *  Currently, only mocking of nodes is supported (via _MockNodeFactory_).  However, it's possible to extend the framework
    to support writing of nodes to a real repository (for example, a _TransientRepository_) by implementing 
    _NodeFactory_ and implementing the required methods.
