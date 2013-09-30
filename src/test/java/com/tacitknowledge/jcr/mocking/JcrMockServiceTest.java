@@ -339,7 +339,36 @@ public class JcrMockServiceTest {
 
         //Calling getNodes() should return a fresh iterator which we can use to traverse the node tree again.
         JcrTestingUtils.assertIteratorCount(productANode.getNodes(), 2);
+    }
 
+    @Test
+    public void getPathShouldWorkForBothNodesAndProperties() throws RepositoryException
+    {
+        String jsonNodeStructure =
+                "{" +
+                "    products: {" +
+                "        productA: {" +
+                "            name: 'Air Jordan'," +
+                "            confidentiality: 'Bronze'," +
+                "            someNode: {}," +
+                "            digitalAssets: {" +
+                "                asset1: {" +
+                "                    mimeType: 'jpg'," +
+                "                    contentType: 'photography'," +
+                "                    binary: 'type:Binary, value:/files/air_jordan.jpg'" +
+                "                }" +
+                "            }" +
+                "        }" +
+                "    }" +
+                "}";
+
+        Node rootNode = mockService.fromString(jsonNodeStructure);
+
+        assertEquals("Expected path to be root /", "/", rootNode.getPath());
+        assertEquals("Expected path to be /products", "/products", rootNode.getNode("products").getPath());
+        assertEquals("Expected path to be /products/productA", "/products/productA", rootNode.getNode("products/productA").getPath());
+        Property mimeType = rootNode.getNode("products/productA/digitalAssets/asset1").getProperty("mimeType");
+        assertEquals("Expected path to be /products/productA/digitalAssets/asset1/mimeType", "/products/productA/digitalAssets/asset1/mimeType", mimeType.getPath());
     }
 
 }
