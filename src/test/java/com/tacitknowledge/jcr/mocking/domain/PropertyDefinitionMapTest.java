@@ -30,7 +30,7 @@ public class PropertyDefinitionMapTest {
 
         propertyDefinitionMap.getType();
 
-        fail("An exception was expected");
+        fail("An IllegalArgumentException exception was expected");
     }
 
     @Test
@@ -47,7 +47,20 @@ public class PropertyDefinitionMapTest {
         propertyDefinitionMap = new PropertyDefinitionMap(valueString );
         propertyValue = propertyDefinitionMap.getValue();
 
+        assertEquals("Expected type to be Binary", PropertyType.BINARY, propertyDefinitionMap.getType());
+
         assertEquals("Expecting File Path", "/files/air_jordan.jpg", propertyValue);
 
+    }
+
+    @Test
+    public void shouldSupportPropertyDefinitionsWithColonInItsName() throws Exception
+    {
+        String propertyDefinition = "nt:file";
+
+        PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(propertyDefinition);
+        String propertyValue = propertyDefinitionMap.getValue();
+
+        assertEquals("Expected value to be nt:file", "nt:file", propertyValue);
     }
 }

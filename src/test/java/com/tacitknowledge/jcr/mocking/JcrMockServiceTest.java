@@ -53,21 +53,6 @@ public class JcrMockServiceTest {
                     "    }" +
                     "} ";
 
-    public static final String JSON_NODE_DEFINITION_WITH_PRIMARY_TYPE =
-                    "{" +
-                    "    ac2d111: {" +
-                    "        trustEntity: 'type:String'," +
-                    "        view: 'type:String'," +
-                    "        binary: {" +
-                    "            jcr:primaryType: 'nt:file'" +
-                    "        }," +
-                    "        anotherNode: {" +
-                    "            attri: 'valueyes'" +
-                    "        }" +
-                    "    }" +
-                    "} ";
-
-
     @BeforeClass
     public static void setup() throws RepositoryException, IOException {
         NodeFactory mockFactory = new MockNodeFactory();
@@ -369,6 +354,33 @@ public class JcrMockServiceTest {
         assertEquals("Expected path to be /products/productA", "/products/productA", rootNode.getNode("products/productA").getPath());
         Property mimeType = rootNode.getNode("products/productA/digitalAssets/asset1").getProperty("mimeType");
         assertEquals("Expected path to be /products/productA/digitalAssets/asset1/mimeType", "/products/productA/digitalAssets/asset1/mimeType", mimeType.getPath());
+    }
+
+    @Test
+    public void shouldReturnCorrectPrimaryTypePropertyValueAsString() throws RepositoryException
+    {
+        String jsonNodeStructureWithPrimaryType =
+                        "{" +
+                        "    ac2d111: {" +
+                        "        trustEntity: 'type:String'," +
+                        "        view: 'type:String'," +
+                        "        binary: {" +
+                        "            'jcr:primaryType': 'nt:file'" +
+                        "        }," +
+                        "        anotherNode: {" +
+                        "            attri: 'valueyes'" +
+                        "        }" +
+                        "    }" +
+                        "} ";
+
+        Node rootNode = mockService.fromString(jsonNodeStructureWithPrimaryType);
+
+        Node binaryNode = rootNode.getNode("ac2d111/binary");
+        Property primaryTypeProperty = binaryNode.getProperty("jcr:primaryType");
+
+        assertNotNull("Primary type property should not be null", primaryTypeProperty);
+        assertEquals("Expected primary type to be nt:file", "nt:file", primaryTypeProperty.getString());
+        assertEquals("Expected primary type to be nt:file", "nt:file", primaryTypeProperty.getValue().getString());
     }
 
 }
