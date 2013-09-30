@@ -191,6 +191,16 @@ public class MockNodeFactoryTest {
     }
 
     @Test
+    public void shouldCreateNewIteratorOnEachCallToGetNodes() throws RepositoryException {
+        List<Node> childNodes = new ArrayList<Node>();
+        nodeFactory.createIteratorFor(parent, childNodes);
+        NodeIterator firstNodeIterator = parent.getNodes();
+        NodeIterator secondNodeIterator = parent.getNodes();
+        assertNotSame("Consecutive calls to getNode() should return different iterator object", firstNodeIterator, secondNodeIterator);
+    }
+
+
+    @Test
     public void shouldCreateBinaryValue() throws RepositoryException {
 
         nodeFactory.createValueFor(property, "/files/air_jordan.jpg", PropertyType.BINARY);

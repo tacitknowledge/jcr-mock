@@ -1,6 +1,8 @@
 package com.tacitknowledge.jcr.testing.impl;
 
 import com.tacitknowledge.jcr.testing.NodeFactory;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -118,9 +120,16 @@ public class MockNodeFactory implements NodeFactory {
     }
 
     @Override
-    public void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException {
-        NodeIteratorAdapter nodeIteratorAdapter = new NodeIteratorAdapter(childNodes.iterator());
-        when(parent.getNodes()).thenReturn(nodeIteratorAdapter);
+    public void createIteratorFor(Node parent, final List<Node> childNodes) throws RepositoryException {
+        when(parent.getNodes()).thenAnswer(new Answer<NodeIterator>()
+        {
+            @Override
+            public NodeIterator answer(InvocationOnMock invocationOnMock) throws Throwable
+            {
+                return new NodeIteratorAdapter(childNodes.iterator());
+            }
+        });
+
         when(parent.getSession()).thenReturn(session);
     }
 

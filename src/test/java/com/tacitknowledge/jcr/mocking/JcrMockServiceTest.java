@@ -38,6 +38,7 @@ public class JcrMockServiceTest {
                     "        }" +
                     "    }" +
                     "}";
+
     public static final String JSON_NODE_DEFINITION_WITH_TWO_NODES =
                     "{" +
                     "    ac2d111: {" +
@@ -51,6 +52,21 @@ public class JcrMockServiceTest {
                     "        }" +
                     "    }" +
                     "} ";
+
+    public static final String JSON_NODE_DEFINITION_WITH_PRIMARY_TYPE =
+                    "{" +
+                    "    ac2d111: {" +
+                    "        trustEntity: 'type:String'," +
+                    "        view: 'type:String'," +
+                    "        binary: {" +
+                    "            jcr:primaryType: 'nt:file'" +
+                    "        }," +
+                    "        anotherNode: {" +
+                    "            attri: 'valueyes'" +
+                    "        }" +
+                    "    }" +
+                    "} ";
+
 
     @BeforeClass
     public static void setup() throws RepositoryException, IOException {
@@ -286,4 +302,44 @@ public class JcrMockServiceTest {
         assertEquals("Property Name doesn't match", "testProperty", testProperty.getName());
         assertEquals("Property Value doesn't match", "myvalue", testProperty.getString());
     }
+
+    @Test
+    public void shouldBeAbleToIterateOnNodesMultipleTimes() throws RepositoryException {
+        String jsonNodeStructure =
+                "{" +
+                "    products: {" +
+                "        productA: {" +
+                "            name: 'Air Jordan'," +
+                "            confidentiality: 'Bronze'," +
+                "            someNode: {}," +
+                "            digitalAssets: {" +
+                "                asset1: {" +
+                "                    mimeType: 'jpg'," +
+                "                    contentType: 'photography'," +
+                "                    binary: 'type:Binary, value:/files/air_jordan.jpg'" +
+                "                }" +
+                "            }" +
+                "        }" +
+                "    }" +
+                "}";
+
+        Node rootNode = mockService.fromString(jsonNodeStructure);
+        assertNotNull(rootNode);
+
+        Node productANode = rootNode.getNode("products/productA");
+
+        assertNotNull(productANode);
+
+        //Call to JcrTestingUtils.assertIteratorCount will traverse the iterator
+        NodeIterator productAIterator = productANode.getNodes();
+        JcrTestingUtils.assertIteratorCount(productAIterator, 2);
+
+        //Traversing the iterator again should result in no nodes found
+        JcrTestingUtils.assertIteratorCount(productAIterator, 0);
+
+        //Calling getNodes() should return a fresh iterator which we can use to traverse the node tree again.
+        JcrTestingUtils.assertIteratorCount(productANode.getNodes(), 2);
+
+    }
+
 }
