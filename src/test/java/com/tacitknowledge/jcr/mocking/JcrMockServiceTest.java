@@ -383,4 +383,40 @@ public class JcrMockServiceTest {
         assertEquals("Expected primary type to be nt:file", "nt:file", primaryTypeProperty.getValue().getString());
     }
 
+    @Test
+    public void shouldBeAbleToRetrieveNestedPropertyFromAncestors() throws RepositoryException {
+        String jsonNodeStructure =
+                "{" +
+                "    products: {" +
+                "        productA: {" +
+                "            name: 'Air Jordan'," +
+                "            confidentiality: 'Bronze'," +
+                "            someNode: {}," +
+                "            digitalAssets: {" +
+                "                asset1: {" +
+                "                    mimeType: 'jpg'," +
+                "                    contentType: 'photography'," +
+                "                    binary: 'type:Binary, value:/files/air_jordan.jpg'" +
+                "                }" +
+                "            }" +
+                "        }" +
+                "    }" +
+                "}";
+
+        Node rootNode = mockService.fromString(jsonNodeStructure);
+        assertNotNull(rootNode);
+
+        Property productAName = rootNode.getProperty("products/productA/name");
+
+        assertNotNull(productAName);
+        assertEquals("Expected name to be 'Air Jordan'", "Air Jordan", productAName.getString());
+
+        Node digitalAssetsNode = rootNode.getNode("products/productA/digitalAssets");
+        Property contentTypeProperty = digitalAssetsNode.getProperty("asset1/contentType");
+
+        assertNotNull(contentTypeProperty);
+        assertEquals("Expected content type to be 'photography'", "photography", contentTypeProperty.getValue().getString());
+    }
+
+
 }

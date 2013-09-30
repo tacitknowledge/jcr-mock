@@ -6,7 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -312,5 +317,26 @@ public class MockNodeFactoryTest {
         assertEquals("Expected path to be /firstLevel", "/firstLevel", firstLevelNode.getPath());
         assertEquals("Expected path to be /firstLevel/secondLevel", "/firstLevel/secondLevel", secondLevelNode.getPath());
         assertEquals("Expected path to be /firstLevel/secondLevel/thirdLevelProp", "/firstLevel/secondLevel/thirdLevelProp", thirdLevelProp.getPath());
+    }
+
+    @Test
+    public void shouldRetrievePropertyFromAllAscendantNodes() throws RepositoryException
+    {
+        Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+        Node firstLevelNode = nodeFactory.createNode(rootNode, "firstLevel");
+        Node secondLevelNode = nodeFactory.createNode(firstLevelNode, "secondLevel");
+
+        nodeFactory.createProperty(secondLevelNode, "thirdLevelProp", "some value", PropertyTypeEnum.STRING.getPropertyType());
+
+        Property thirdLevelProp = firstLevelNode.getProperty("secondLevel/thirdLevelProp");
+        assertNotNull("Expected property to be not null", thirdLevelProp);
+        assertEquals("Expected property value to be 'some value'", "some value", thirdLevelProp.getString());
+        assertEquals("Expected property value to be 'some value'", "some value", thirdLevelProp.getValue().getString());
+
+        Property propertyFromRootNode = rootNode.getProperty("firstLevel/secondLevel/thirdLevelProp");
+        assertNotNull("Expected property to be not null", propertyFromRootNode);
+        assertEquals("Expected property value to be 'some value'", "some value", propertyFromRootNode.getString());
+        assertEquals("Expected property value to be 'some value'", "some value", propertyFromRootNode.getValue().getString());
     }
 }

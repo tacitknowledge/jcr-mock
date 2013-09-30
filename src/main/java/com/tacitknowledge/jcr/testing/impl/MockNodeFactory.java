@@ -1,14 +1,19 @@
 package com.tacitknowledge.jcr.testing.impl;
 
 import com.tacitknowledge.jcr.testing.NodeFactory;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import javax.jcr.*;
+import javax.jcr.Binary;
+import javax.jcr.Item;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
@@ -62,8 +67,10 @@ public class MockNodeFactory implements NodeFactory {
         when(parent.getSession()).thenReturn(session);
         when(parent.hasProperty(name)).thenReturn(true);
         when(parent.hasProperties()).thenReturn(true);
+
         String parentPath = parent.getPath();
         when(property.getPath()).thenReturn(parentPath + "/" + name);
+        buildParentHierarchy(parent, property, name);
     }
 
     @Override
@@ -110,10 +117,7 @@ public class MockNodeFactory implements NodeFactory {
         {
             when(childNode.getPath()).thenReturn("/");
         }
-        else
-        {
 
-        }
         when(childNode.isNode()).thenReturn(true);
         return childNode;
     }
@@ -255,12 +259,23 @@ public class MockNodeFactory implements NodeFactory {
         when(valueObject.getBinary()).thenReturn(binary);
     }
 
-    private void buildParentHierarchy(Node parent, Node childNode, String nodePath) throws RepositoryException {
-        if (parent != null) {
-            when(parent.getNode(nodePath)).thenReturn(childNode);
+    private void buildParentHierarchy(Node parent, Item childItem, String itemPath) throws RepositoryException
+    {
+        if (parent != null)
+        {
+            if(childItem.isNode())
+            {
+                when(parent.getNode(itemPath)).thenReturn((Node)childItem);
+            }
+            else
+            {
+                when(parent.getProperty(itemPath)).thenReturn((Property)childItem);
+            }
+
             String parentName = parent.getName();
+
             if (parentName != null) {
-                buildParentHierarchy(parent.getParent(), childNode, parentName + "/" + nodePath);
+                buildParentHierarchy(parent.getParent(), childItem, parentName + "/" + itemPath);
             }
         }
     }
