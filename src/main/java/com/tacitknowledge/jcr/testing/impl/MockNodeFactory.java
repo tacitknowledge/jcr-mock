@@ -4,6 +4,10 @@ import com.tacitknowledge.jcr.testing.NodeFactory;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import org.apache.commons.lang3.StringUtils;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -52,10 +56,14 @@ public class MockNodeFactory implements NodeFactory {
         } else if (property.getValue() == null) {
             createValue(property, propertyValue, propertyType);
         }
+
+        when(property.getParent()).thenReturn(parent);
         when(property.getSession()).thenReturn(session);
         when(parent.getSession()).thenReturn(session);
         when(parent.hasProperty(name)).thenReturn(true);
         when(parent.hasProperties()).thenReturn(true);
+        String parentPath = parent.getPath();
+        when(property.getPath()).thenReturn(parentPath + "/" + name);
     }
 
     @Override
@@ -80,14 +88,32 @@ public class MockNodeFactory implements NodeFactory {
             when(childNode.getParent()).thenReturn(parent);
             buildParentHierarchy(parent, childNode, name);
         }
+        when(childNode.getPath()).thenAnswer(new Answer<String>()
+        {
+            @Override
+            public String answer(InvocationOnMock invocationOnMock) throws Throwable
+            {
+                Node theNode = (Node) invocationOnMock.getMock();
+                return buildPathForNode(theNode);
+            }
+        });
         when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
 
     @Override
-    public Node createNode(String name) throws RepositoryException {
+    public Node createNode(String name) throws RepositoryException
+    {
         Node childNode = mock(Node.class);
         when(childNode.getName()).thenReturn(name);
+        if(StringUtils.EMPTY.equals(name))
+        {
+            when(childNode.getPath()).thenReturn("/");
+        }
+        else
+        {
+
+        }
         when(childNode.isNode()).thenReturn(true);
         return childNode;
     }
@@ -163,6 +189,16 @@ public class MockNodeFactory implements NodeFactory {
 
         when(property.getSession()).thenReturn(session);
         return returnValue;
+    }
+
+    private String buildPathForNode(final Node node) throws RepositoryException
+    {
+        if(node != null && !StringUtils.EMPTY.equals(node.getName()))
+        {
+            return buildPathForNode(node.getParent()) + "/" + node.getName();
+        }
+
+        return StringUtils.EMPTY;
     }
 
     private void createDateValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
