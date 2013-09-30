@@ -1,5 +1,8 @@
 package com.tacitknowledge.jcr.testing.impl;
 
+import com.tacitknowledge.jcr.testing.NodeFactory;
+import com.tacitknowledge.jcr.testing.utils.PropertyTypeEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -291,5 +294,23 @@ public class MockNodeFactoryTest {
         assertNotNull(childNode);
         assertNotNull(childNode.getSession());
 
+    }
+
+    @Test
+    public void callToGetPathShouldReturnAbsolutePath() throws RepositoryException
+    {
+        NodeFactory myNodeFactory = new MockNodeFactory();
+        Node rootNode = myNodeFactory.createNode(StringUtils.EMPTY);
+
+        Node firstLevelNode = myNodeFactory.createNode(rootNode, "firstLevel");
+        Node secondLevelNode = myNodeFactory.createNode(firstLevelNode, "secondLevel");
+
+        myNodeFactory.createProperty(secondLevelNode, "thirdLevelProp", "some value", PropertyTypeEnum.STRING.getPropertyType());
+        Property thirdLevelProp = secondLevelNode.getProperty("thirdLevelProp");
+
+        assertEquals("Expected path to be /", "/", rootNode.getPath());
+        assertEquals("Expected path to be /firstLevel", "/firstLevel", firstLevelNode.getPath());
+        assertEquals("Expected path to be /firstLevel/secondLevel", "/firstLevel/secondLevel", secondLevelNode.getPath());
+        assertEquals("Expected path to be /firstLevel/secondLevel/thirdLevelProp", "/firstLevel/secondLevel/thirdLevelProp", thirdLevelProp.getPath());
     }
 }
