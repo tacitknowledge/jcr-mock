@@ -1,5 +1,7 @@
 package com.tacitknowledge.jcr.testing.impl;
 
+import com.tacitknowledge.jcr.testing.utils.PropertyTypeEnum;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -290,6 +292,28 @@ public class MockNodeFactoryTest {
 
         assertNotNull(childNode);
         assertNotNull(childNode.getSession());
+
+    }
+
+    @Test
+    public void shouldRetrievePropertyFromAllAscendantNodes() throws RepositoryException
+    {
+        Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+        Node firstLevelNode = nodeFactory.createNode(rootNode, "firstLevel");
+        Node secondLevelNode = nodeFactory.createNode(firstLevelNode, "secondLevel");
+
+        nodeFactory.createProperty(secondLevelNode, "thirdLevelProp", "some value", PropertyTypeEnum.STRING.getPropertyType());
+
+        Property thirdLevelProp = firstLevelNode.getProperty("secondLevel/thirdLevelProp");
+        assertNotNull("Expected property to be not null", thirdLevelProp);
+        assertEquals("Expected property falue to be 'some value'", "some value", thirdLevelProp.getString());
+        assertEquals("Expected property falue to be 'some value'", "some value", thirdLevelProp.getValue().getString());
+
+        Property propertyFromRootNode = rootNode.getProperty("firstLevel/secondLevel/thirdLevelProp");
+        assertNotNull("Expected property to be not null", propertyFromRootNode);
+        assertEquals("Expected property falue to be 'some value'", "some value", propertyFromRootNode.getString());
+        assertEquals("Expected property falue to be 'some value'", "some value", propertyFromRootNode.getValue().getString());
 
     }
 }
