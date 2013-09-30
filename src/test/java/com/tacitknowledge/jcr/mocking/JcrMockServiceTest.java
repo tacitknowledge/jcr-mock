@@ -370,8 +370,8 @@ public class JcrMockServiceTest {
         assertNotNull(productAName);
         assertEquals("Expected name to be 'Air Jordan'", "Air Jordan", productAName.getString());
 
-        Node productANode = rootNode.getNode("products/productA");
-        Property contentTypeProperty = productANode.getProperty("digitalAssets/asset1/contentType");
+        Node digitalAssetsNode = rootNode.getNode("products/productA/digitalAssets");
+        Property contentTypeProperty = digitalAssetsNode.getProperty("asset1/contentType");
 
         assertNotNull(contentTypeProperty);
         assertEquals("Expected content type to be 'photography'", "photography", contentTypeProperty.getValue().getString());
