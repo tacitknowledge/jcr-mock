@@ -30,7 +30,7 @@ public class PropertyDefinitionMapTest {
 
         propertyDefinitionMap.getType();
 
-        fail("An exception was expected");
+        fail("An IllegalArgumentException exception was expected");
     }
 
     @Test
@@ -49,5 +49,17 @@ public class PropertyDefinitionMapTest {
 
         assertEquals("Expecting File Path", "/files/air_jordan.jpg", propertyValue);
 
+    }
+
+    @Test
+    public void shouldSupportNodeTypesLikeNTFile() throws Exception
+    {
+        String valueString = "nt:file";
+
+        PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(valueString);
+
+        String propertyValue = propertyDefinitionMap.getValue();
+
+        assertEquals("Expected value to be nt:file", "nt:file", propertyValue);
     }
 }
