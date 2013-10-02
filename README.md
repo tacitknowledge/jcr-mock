@@ -110,7 +110,7 @@ Usage
     <dependency>
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
-        <version>2.0.0</version>
+        <version>2.1.0</version>
     </dependency>
 ```
 
@@ -224,7 +224,11 @@ Supported Functionality
 
 Change Log
 ----------
-
+* 2.1.0 - October 2, 2013
+  * Adding ability to retrieve nested properties from ancestor nodes.
+  * Fixing issue with property value returning blank for jar:primaryType.
+  * Adding support for getPath() method for both Nodes and Properties.
+  * Fixing issue with multiple invocations to node.getNodes() not working.
 * 2.0.0 - September 6, 2013
   * Support for node.hasProperty, node.hasProperties, node.getSession and property.getSession methods.
   * Removed jackrabbit dependencies.
@@ -235,10 +239,6 @@ Change Log
 TODOs
 -----
 
-*  Add support for retrieval of nested properties (e.g. node.getProperty("jcr:content/myProperty")).
-*  Add support for node.getPath() method.
-*  Fix the following bugs:
-   *  node.getProperty("jcr:primaryType") does not work (workaround is to do node.getPrimaryNodeType() or use node.isNodeType()).  
 *  Currently, only mocking of nodes is supported (via _MockNodeFactory_).  However, it's possible to extend the framework
    to support writing of nodes to a real repository (for example, a _TransientRepository_) by implementing 
    _NodeFactory_ and implementing the required methods.
