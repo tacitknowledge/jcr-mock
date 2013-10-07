@@ -239,6 +239,7 @@ Change Log
 TODOs
 -----
 
+*  Add support for PropertyIterator, via node.getProperties() method.
 *  Currently, only mocking of nodes is supported (via _MockNodeFactory_).  However, it's possible to extend the framework
    to support writing of nodes to a real repository (for example, a _TransientRepository_) by implementing 
    _NodeFactory_ and implementing the required methods.
