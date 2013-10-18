@@ -314,9 +314,13 @@ public class MockNodeFactoryTest {
         Property thirdLevelProp = secondLevelNode.getProperty("thirdLevelProp");
 
         assertEquals("Expected path to be /", "/", rootNode.getPath());
+	    assertEquals("Expected path to be /", "/", rootNode.toString());
         assertEquals("Expected path to be /firstLevel", "/firstLevel", firstLevelNode.getPath());
+	    assertEquals("Expected path to be /firstLevel", "/firstLevel", firstLevelNode.toString());
         assertEquals("Expected path to be /firstLevel/secondLevel", "/firstLevel/secondLevel", secondLevelNode.getPath());
+	    assertEquals("Expected path to be /firstLevel/secondLevel", "/firstLevel/secondLevel", secondLevelNode.toString());
         assertEquals("Expected path to be /firstLevel/secondLevel/thirdLevelProp", "/firstLevel/secondLevel/thirdLevelProp", thirdLevelProp.getPath());
+	    assertEquals("Expected path to be /firstLevel/secondLevel/thirdLevelProp", "/firstLevel/secondLevel/thirdLevelProp", thirdLevelProp.toString());
     }
 
     @Test

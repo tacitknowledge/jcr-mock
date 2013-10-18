@@ -68,8 +68,9 @@ public class MockNodeFactory implements NodeFactory {
         when(parent.hasProperty(name)).thenReturn(true);
         when(parent.hasProperties()).thenReturn(true);
 
-        String parentPath = parent.getPath();
-        when(property.getPath()).thenReturn(parentPath + "/" + name);
+        String propertyPath = parent.getPath() + "/" + name;
+        when(property.getPath()).thenReturn(propertyPath);
+	    when(property.toString()).thenReturn(propertyPath);
         buildParentHierarchy(parent, property, name);
     }
 
@@ -83,7 +84,7 @@ public class MockNodeFactory implements NodeFactory {
         when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
-
+	//TODO make node.getSession().getRootNode() return the root node rather than null
     @Override
     public Node createNode(Node parent, String name) throws RepositoryException {
         Node childNode = null;
@@ -95,15 +96,9 @@ public class MockNodeFactory implements NodeFactory {
             when(childNode.getParent()).thenReturn(parent);
             buildParentHierarchy(parent, childNode, name);
         }
-        when(childNode.getPath()).thenAnswer(new Answer<String>()
-        {
-            @Override
-            public String answer(InvocationOnMock invocationOnMock) throws Throwable
-            {
-                Node theNode = (Node) invocationOnMock.getMock();
-                return buildPathForNode(theNode);
-            }
-        });
+	    String path = buildPathForNode(childNode);
+	    when(childNode.getPath()).thenReturn(path);
+	    when(childNode.toString()).thenReturn(path);
         when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
@@ -116,6 +111,7 @@ public class MockNodeFactory implements NodeFactory {
         if(StringUtils.EMPTY.equals(name))
         {
             when(childNode.getPath()).thenReturn("/");
+	        when(childNode.toString()).thenReturn("/");
         }
 
         when(childNode.isNode()).thenReturn(true);
