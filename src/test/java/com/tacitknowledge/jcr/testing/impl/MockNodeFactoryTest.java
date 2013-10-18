@@ -333,10 +333,35 @@ public class MockNodeFactoryTest {
         assertNotNull("Expected property to be not null", thirdLevelProp);
         assertEquals("Expected property value to be 'some value'", "some value", thirdLevelProp.getString());
         assertEquals("Expected property value to be 'some value'", "some value", thirdLevelProp.getValue().getString());
+	    assertEquals("Expected hasProperty() to return true", true, firstLevelNode.hasProperty("secondLevel/thirdLevelProp"));
 
         Property propertyFromRootNode = rootNode.getProperty("firstLevel/secondLevel/thirdLevelProp");
         assertNotNull("Expected property to be not null", propertyFromRootNode);
         assertEquals("Expected property value to be 'some value'", "some value", propertyFromRootNode.getString());
         assertEquals("Expected property value to be 'some value'", "some value", propertyFromRootNode.getValue().getString());
+	    assertEquals("Expected hasProperty() to return true", true, rootNode.hasProperty("firstLevel/secondLevel/thirdLevelProp"));
+	    assertEquals("Expected hasProperty() to return false", false, rootNode.hasProperty("secondLevel/thirdLevelProp"));
     }
+
+	@Test
+	public void shouldRetrieveNodeFromAllAscendantNodes() throws RepositoryException
+	{
+		Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+		Node firstLevelNode = nodeFactory.createNode(rootNode, "firstLevel");
+		Node secondLevelNode = nodeFactory.createNode(firstLevelNode, "secondLevel");
+		Node thirdLevelNode = nodeFactory.createNode(secondLevelNode, "thirdLevel");
+
+		assertTrue("Expected root node to have firstLevel/secondLevel/thirdLevel)", rootNode.hasNode("firstLevel/secondLevel/thirdLevel"));
+		assertFalse("Expected root node to NOT have secondLevel/thirdLevel)", rootNode.hasNode("secondLevel/thirdLevel"));
+		assertTrue("Expected root node to have firstLevel/secondLevel)", rootNode.hasNode("firstLevel/secondLevel"));
+		assertEquals("Expected root node to access firstLevel/secondLevel/thirdLevel)", rootNode.getNode("firstLevel/secondLevel/thirdLevel"), thirdLevelNode);
+		assertEquals("Expected root node to access firstLevel/secondLevel)", rootNode.getNode("firstLevel/secondLevel"), secondLevelNode);
+
+		assertTrue("Expected first level node to have secondLevel/thirdLevel)", firstLevelNode.hasNode("secondLevel/thirdLevel"));
+		assertFalse("Expected first level node to NOT have firstLevel/secondLevel/thirdLevel)", firstLevelNode.hasNode("firstLevel/secondLevel/thirdLevel"));
+		assertTrue("Expected first level node to have secondLevel)", firstLevelNode.hasNode("secondLevel"));
+		assertEquals("Expected first level node to access secondLevel/thirdLevel)", firstLevelNode.getNode("secondLevel/thirdLevel"), thirdLevelNode);
+		assertEquals("Expected first level node to access secondLevel)", firstLevelNode.getNode("secondLevel"), secondLevelNode);
+	}
 }
