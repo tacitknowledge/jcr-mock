@@ -5,15 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import javax.jcr.Binary;
-import javax.jcr.Item;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
@@ -57,21 +49,13 @@ public class MockNodeFactory implements NodeFactory {
             when(property.getString()).thenReturn(propertyValue);
             when(property.getName()).thenReturn(name);
             when(property.getType()).thenReturn(propertyType);
+	        when(property.isMultiple()).thenReturn(false);
             when(parent.getProperty(name)).thenReturn(property);
         } else if (property.getValue() == null) {
             createValue(property, propertyValue, propertyType);
         }
 
-        when(property.getParent()).thenReturn(parent);
-        when(property.getSession()).thenReturn(session);
-        when(parent.getSession()).thenReturn(session);
-        when(parent.hasProperty(name)).thenReturn(true);
-        when(parent.hasProperties()).thenReturn(true);
-
-        String propertyPath = parent.getPath() + "/" + name;
-        when(property.getPath()).thenReturn(propertyPath);
-	    when(property.toString()).thenReturn(propertyPath);
-        buildParentHierarchy(parent, property, name);
+        mockCommonMethods(property, parent, name);
     }
 
     @Override
@@ -84,7 +68,7 @@ public class MockNodeFactory implements NodeFactory {
         when(childNode.getSession()).thenReturn(session);
         return childNode;
     }
-	//TODO make node.getSession().getRootNode() return the root node rather than null
+
     @Override
     public Node createNode(Node parent, String name) throws RepositoryException {
         Node childNode = null;
@@ -112,6 +96,7 @@ public class MockNodeFactory implements NodeFactory {
         {
             when(childNode.getPath()).thenReturn("/");
 	        when(childNode.toString()).thenReturn("/");
+	        when(session.getRootNode()).thenReturn(childNode);
         }
 
         when(childNode.isNode()).thenReturn(true);
@@ -145,7 +130,43 @@ public class MockNodeFactory implements NodeFactory {
 
     }
 
-    @Override
+	@Override
+	public void createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException {
+		Property property = parent.getProperty(name);
+		if (property == null) {
+			property = mock(Property.class);
+		}
+		if (property.getValue() == null) {
+			Value[] values = new Value[propertyValues.length];
+			for(int i = 0; i < values.length; i++) {
+				Value value = mock(Value.class);
+				when(value.getString()).thenReturn(propertyValues[i]);
+				when(value.getType()).thenReturn(PropertyType.STRING);
+				values[i] = value;
+			}
+			when(property.getValues()).thenReturn(values);
+			when(property.getName()).thenReturn(name);
+			when(property.getType()).thenReturn(PropertyType.STRING);
+			when(property.isMultiple()).thenReturn(true);
+			when(parent.getProperty(name)).thenReturn(property);
+		}
+		mockCommonMethods(property, parent, name);
+	}
+
+	private void mockCommonMethods(Property property, Node parent, String name) throws RepositoryException {
+		when(property.getParent()).thenReturn(parent);
+		when(property.getSession()).thenReturn(session);
+		when(parent.getSession()).thenReturn(session);
+		when(parent.hasProperty(name)).thenReturn(true);
+		when(parent.hasProperties()).thenReturn(true);
+
+		String propertyPath = parent.getPath() + "/" + name;
+		when(property.getPath()).thenReturn(propertyPath);
+		when(property.toString()).thenReturn(propertyPath);
+		buildParentHierarchy(parent, property, name);
+	}
+
+	@Override
     public void createIteratorFor(Node parent, final List<Node> childNodes) throws RepositoryException {
         when(parent.getNodes()).thenAnswer(new Answer<NodeIterator>()
         {

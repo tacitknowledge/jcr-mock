@@ -1,5 +1,6 @@
 package com.tacitknowledge.jcr.mocking.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.tacitknowledge.jcr.mocking.JcrMockService;
@@ -9,10 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
@@ -72,12 +70,29 @@ public class JsonMockService implements JcrMockService {
                 int propertyType = propertyDefinitionMap.getType();
                 String propertyValue = propertyDefinitionMap.getValue();
                 nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
+            }else if(childElement.isJsonArray()){
+	            String[] values = readMultiValuedProperty(childElement);
+	            nodeFactory.createMultiValuedProperty(parent, childElementName, values);
             }
         }
         nodeFactory.createIteratorFor(parent, childNodes);
 
         return parent;
     }
+
+	private String[] readMultiValuedProperty(JsonElement propertyElement) {
+		List<String> childElementValues = new ArrayList<String>();
+		JsonArray jsonArray = propertyElement.getAsJsonArray();
+		Iterator<JsonElement> arrayIterator = jsonArray.iterator();
+		while(arrayIterator.hasNext()) {
+			JsonElement element = arrayIterator.next();
+			if(!element.isJsonPrimitive()) {
+				return new String[] {};
+			}
+			childElementValues.add(element.getAsString());
+		}
+		return childElementValues.toArray(new String[childElementValues.size()]);
+	}
 
     /**
      * Parses a given String as JSON

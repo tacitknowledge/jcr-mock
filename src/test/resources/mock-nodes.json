@@ -10,10 +10,7 @@ ac2d112 : {
         'jcr:primaryType' : "nt:file"
     },
     trustEntity : "type:String",
-    view : "type:String",
-    multi:[
-    "value1", "value2","value3"
-    ]
+    view : "type:String"
 },
 ac2d113 : {
     binary : {
