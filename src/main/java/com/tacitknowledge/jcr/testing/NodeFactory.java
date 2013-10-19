@@ -21,6 +21,8 @@ public interface NodeFactory {
 
     void createPropertyFromDefinition(Node parentNode, PropertyDefinition propertyDefinition) throws RepositoryException;
 
+	void createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException;
+
     Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException;
 
     /**

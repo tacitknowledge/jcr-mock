@@ -327,8 +327,7 @@ public class JcrMockServiceTest {
     }
 
     @Test
-    public void getPathShouldWorkForBothNodesAndProperties() throws RepositoryException
-    {
+    public void getPathShouldWorkForBothNodesAndProperties() throws RepositoryException {
         String jsonNodeStructure =
                 "{" +
                 "    products: {" +
@@ -357,8 +356,7 @@ public class JcrMockServiceTest {
     }
 
     @Test
-    public void shouldReturnCorrectPrimaryTypePropertyValueAsString() throws RepositoryException
-    {
+    public void shouldReturnCorrectPrimaryTypePropertyValueAsString() throws RepositoryException {
         String jsonNodeStructureWithPrimaryType =
                         "{" +
                         "    ac2d111: {" +
@@ -418,5 +416,26 @@ public class JcrMockServiceTest {
         assertEquals("Expected content type to be 'photography'", "photography", contentTypeProperty.getValue().getString());
     }
 
+	@Test
+	public void shouldReadMultiValuedProperty() throws RepositoryException {
+		String jsonNodeStructure =
+				"{" +
+				"    ac2d111: {" +
+				"        skills: [\"skill1\", \"skill2\", \"skill3\"]" +
+				"   }" +
+				"}";
+		String propertyName = "ac2d111/skills";
+		Node rootNode = mockService.fromString(jsonNodeStructure);
+		assertTrue(rootNode.hasProperty(propertyName));
+		assertNotNull(rootNode.getProperty(propertyName));
+		Property property = rootNode.getProperty(propertyName);
+		assertTrue(property.isMultiple());
+		assertNotNull(property.getValues());
+		Value[] values = property.getValues();
+		assertEquals(values.length, 3);
+		assertEquals(values[0].getString(), "skill1");
+		assertEquals(values[1].getString(), "skill2");
+		assertEquals(values[2].getString(), "skill3");
+	}
 
 }
