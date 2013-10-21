@@ -5,7 +5,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import java.util.List;
 
 /**
@@ -17,11 +16,9 @@ public interface NodeFactory {
 
     String JCR_PRIMARY_TYPE = "jcr:primaryType";
 
-    void createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException;
+    Property createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException;
 
-    void createPropertyFromDefinition(Node parentNode, PropertyDefinition propertyDefinition) throws RepositoryException;
-
-	void createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException;
+	Property createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException;
 
     Node createNode(Node parentNode, String nodeName, String nodeTypeName) throws RepositoryException;
 
@@ -50,6 +47,8 @@ public interface NodeFactory {
      * @throws RepositoryException If a repository error happens
      */
     void createIteratorFor(Node parent, List<Node> childNodes) throws RepositoryException;
+
+	void createPropertyIteratorFor(Node parent, final List<Property> propertyList) throws RepositoryException;
 
     Value createValueFor(Property property, String valueStr, int valueType) throws RepositoryException;
 

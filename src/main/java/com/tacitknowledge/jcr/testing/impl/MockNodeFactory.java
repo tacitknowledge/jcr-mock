@@ -7,7 +7,6 @@ import org.mockito.stubbing.Answer;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -40,7 +39,7 @@ public class MockNodeFactory implements NodeFactory {
     }
 
     @Override
-    public void createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException {
+    public Property createProperty(Node parent, String name, String propertyValue, int propertyType) throws RepositoryException {
         Property property = parent.getProperty(name);
         if (property == null) {
             property = mock(Property.class);
@@ -56,6 +55,7 @@ public class MockNodeFactory implements NodeFactory {
         }
 
         mockCommonMethods(property, parent, name);
+	    return property;
     }
 
     @Override
@@ -103,35 +103,8 @@ public class MockNodeFactory implements NodeFactory {
         return childNode;
     }
 
-    @Override
-    public void createPropertyFromDefinition(Node parentNode, PropertyDefinition propertyDefinition) throws RepositoryException {
-        String propertyName = propertyDefinition.getName();
-        int propertyType = propertyDefinition.getRequiredType();
-        Property property = mock(Property.class);
-
-        when(parentNode.getProperty(propertyName)).thenReturn(property);
-        when(parentNode.hasProperty(propertyName)).thenReturn(true);
-        when(parentNode.hasProperties()).thenReturn(true);
-        when(property.getType()).thenReturn(propertyType);
-        when(parentNode.getSession()).thenReturn(session);
-        when(property.getSession()).thenReturn(session);
-
-        Value[] defaultValues = propertyDefinition.getDefaultValues();
-
-        if (defaultValues != null) {
-            if (propertyDefinition.isMultiple()) {
-                when(property.isMultiple()).thenReturn(true);
-                when(property.getValues()).thenReturn(defaultValues);
-            } else if (defaultValues.length > 0) {
-                Value value = defaultValues[0];
-                when(property.getValue()).thenReturn(value);
-            }
-        }
-
-    }
-
 	@Override
-	public void createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException {
+	public Property createMultiValuedProperty(Node parent, String name, String[] propertyValues) throws RepositoryException {
 		Property property = parent.getProperty(name);
 		if (property == null) {
 			property = mock(Property.class);
@@ -151,6 +124,7 @@ public class MockNodeFactory implements NodeFactory {
 			when(parent.getProperty(name)).thenReturn(property);
 		}
 		mockCommonMethods(property, parent, name);
+		return property;
 	}
 
 	private void mockCommonMethods(Property property, Node parent, String name) throws RepositoryException {
@@ -179,6 +153,16 @@ public class MockNodeFactory implements NodeFactory {
 
         when(parent.getSession()).thenReturn(session);
     }
+
+	@Override
+	public void createPropertyIteratorFor(Node parent, final List<Property> propertyList) throws RepositoryException {
+		when(parent.getProperties()).thenAnswer(new Answer<PropertyIteratorAdapter>() {
+			@Override
+			public PropertyIteratorAdapter answer(InvocationOnMock invocationOnMock) throws Throwable {
+				return new PropertyIteratorAdapter(propertyList.iterator());
+			}
+		});
+	}
 
     @Override
     public Value createValueFor(Property property, String valueStr, int valueType) throws RepositoryException {

@@ -6,17 +6,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.*;
@@ -130,67 +126,6 @@ public class MockNodeFactoryTest {
     }
 
     @Test
-    public void shouldCreatePropertyFromDefinitionWithNullDefaultValues() throws RepositoryException {
-        Value[] defaultValues = null;
-        when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
-        nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty(PROPERTY_NAME);
-        assertNotNull(actualProperty);
-        assertEquals(1, actualProperty.getType());
-        assertTrue(parent.hasProperty(PROPERTY_NAME));
-        assertNotNull(actualProperty.getSession());
-    }
-
-    @Test
-    public void shouldCreatePropertyFromDefinitionWithDefaultValues() throws RepositoryException {
-        Value value = mock(Value.class);
-        Value[] defaultValues = {value};
-        when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
-        nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty(PROPERTY_NAME);
-        assertNotNull(actualProperty);
-        assertEquals(1, actualProperty.getType());
-        assertEquals(value, actualProperty.getValue());
-        assertTrue(parent.hasProperty(PROPERTY_NAME));
-        assertNotNull(parent.getSession());
-        assertNotNull(actualProperty.getSession());
-        assertEquals(parent.getSession(), actualProperty.getSession());
-
-    }
-
-    @Test
-    public void shouldCreatePropertyFromDefinitionWithDefaultValuesEmpty() throws RepositoryException {
-        Value[] defaultValues = {};
-        when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
-        nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty(PROPERTY_NAME);
-        assertNotNull(actualProperty);
-        assertEquals(1, actualProperty.getType());
-        assertTrue(parent.hasProperty(PROPERTY_NAME));
-        assertNotNull(parent.getSession());
-        assertNotNull(actualProperty.getSession());
-        assertEquals(parent.getSession(), actualProperty.getSession());
-    }
-
-    @Test
-    public void shouldCreatePropertyFromDefinitionWithDefaultValuesMultipleProperties() throws RepositoryException {
-        Value[] defaultValues = {};
-        when(propertyDefinition.getDefaultValues()).thenReturn(defaultValues);
-        when(propertyDefinition.isMultiple()).thenReturn(true);
-        nodeFactory.createPropertyFromDefinition(parent, propertyDefinition);
-        Property actualProperty = parent.getProperty(PROPERTY_NAME);
-        assertNotNull(actualProperty);
-        assertEquals(1, actualProperty.getType());
-        assertTrue(actualProperty.isMultiple());
-        assertEquals(defaultValues, actualProperty.getValues());
-        assertTrue(parent.hasProperty(PROPERTY_NAME));
-        assertNotNull(parent.getSession());
-        assertNotNull(actualProperty.getSession());
-        assertEquals(parent.getSession(), actualProperty.getSession());
-
-    }
-
-    @Test
     public void shouldCreateIterator() throws RepositoryException {
         List<Node> childNodes = new ArrayList<Node>();
         nodeFactory.createIteratorFor(parent, childNodes);
@@ -204,8 +139,41 @@ public class MockNodeFactoryTest {
         nodeFactory.createIteratorFor(parent, childNodes);
         NodeIterator firstNodeIterator = parent.getNodes();
         NodeIterator secondNodeIterator = parent.getNodes();
-        assertNotSame("Consecutive calls to getNode() should return different iterator object", firstNodeIterator, secondNodeIterator);
+        assertNotSame("Consecutive calls to getNodes() should return different iterator object", firstNodeIterator, secondNodeIterator);
     }
+
+	@Test
+	public void shouldCreatePropertyIterator() throws RepositoryException {
+		Property firstProperty = mock(Property.class);
+		Property secondProperty = mock(Property.class);
+		Property thirdProperty = mock(Property.class);
+		Property fourthProperty = mock(Property.class);
+		Property fifthProperty = mock(Property.class);
+		Property[] properties = {firstProperty, secondProperty, thirdProperty, fourthProperty, fifthProperty};
+		List<Property> propertyList = Arrays.asList(properties);
+		nodeFactory.createPropertyIteratorFor(parent, propertyList);
+		PropertyIterator propertyIterator = parent.getProperties();
+		assertNotNull(propertyIterator);
+
+		//make sure we can correctly iterate over the properties
+		int i = 0;
+		while(propertyIterator.hasNext()) {
+			Property propertyFromIterator = propertyIterator.nextProperty();
+			Property propertyFromList = propertyList.get(i);
+			assertEquals(propertyFromList, propertyFromIterator);
+			i++;
+		}
+	}
+
+
+	@Test
+	public void shouldCreateNewPropertyIteratorOnEachCallToGetNodes() throws RepositoryException {
+		List<Property> childNodes = new ArrayList<Property>();
+		nodeFactory.createPropertyIteratorFor(parent, childNodes);
+		PropertyIterator firstPropertyIterator = parent.getProperties();
+		PropertyIterator secondPropertyIterator = parent.getProperties();
+		assertNotSame("Consecutive calls to getProperties() should return different iterator object", firstPropertyIterator, secondPropertyIterator);
+	}
 
 
     @Test
