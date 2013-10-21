@@ -9,6 +9,7 @@ import com.tacitknowledge.jcr.testing.NodeFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -45,6 +46,7 @@ public class JsonMockService implements JcrMockService {
     private Node buildChildNodes(JsonObject parentJsonObject, Node parent) throws RepositoryException {
         Node childNode;
         List<Node> childNodes = new ArrayList<Node>();
+	    List<Property> properties = new ArrayList<Property>();
         if(parent == null){
             parent = nodeFactory.createNode(StringUtils.EMPTY);
         }
@@ -69,14 +71,16 @@ public class JsonMockService implements JcrMockService {
                 PropertyDefinitionMap propertyDefinitionMap = new PropertyDefinitionMap(childElementValue);
                 int propertyType = propertyDefinitionMap.getType();
                 String propertyValue = propertyDefinitionMap.getValue();
-                nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
+                Property property = nodeFactory.createProperty(parent, childElementName, propertyValue, propertyType);
+	            properties.add(property);
             }else if(childElement.isJsonArray()){
 	            String[] values = readMultiValuedProperty(childElement);
-	            nodeFactory.createMultiValuedProperty(parent, childElementName, values);
+	            Property property = nodeFactory.createMultiValuedProperty(parent, childElementName, values);
+	            properties.add(property);
             }
         }
         nodeFactory.createIteratorFor(parent, childNodes);
-
+	    nodeFactory.createPropertyIteratorFor(parent, properties);
         return parent;
     }
 
