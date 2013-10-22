@@ -224,6 +224,11 @@ Supported Functionality
 
 Change Log
 ----------
+* 2.1.1 - October 21, 2013
+  * Adding support for PropertyIterator (i.e. _node.getProperties()_).
+  * Adding user friendly _toString()_ to Node and Property.
+  * _node.hasProperty()_ supports nested property.
+  * Added support for multivalued properties.
 * 2.1.0 - October 2, 2013
   * Adding ability to retrieve nested properties from ancestor nodes.
   * Fixing issue with property value returning blank for jar:primaryType.
@@ -239,7 +244,6 @@ Change Log
 TODOs
 -----
 
-*  Add support for PropertyIterator, via node.getProperties() method.
 *  Currently, only mocking of nodes is supported (via _MockNodeFactory_).  However, it's possible to extend the framework
    to support writing of nodes to a real repository (for example, a _TransientRepository_) by implementing 
    _NodeFactory_ and implementing the required methods.
