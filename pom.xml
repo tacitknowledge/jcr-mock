@@ -44,6 +44,11 @@
             <name>Ulises Pulido</name>
             <email>upulido@tacitknowledge.com</email>
         </developer>
+        <developer>
+            <id>alayouni</id>
+            <name>Ahmed Layouni</name>
+            <email>alayouni@tacitknowledge.com</email>
+        </developer>
     </developers>
 
     <dependencies>
