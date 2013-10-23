@@ -7,6 +7,7 @@ import org.mockito.stubbing.Answer;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.PropertyDefinition;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -137,6 +138,17 @@ public class MockNodeFactory implements NodeFactory {
 		String propertyPath = parent.getPath() + "/" + name;
 		when(property.getPath()).thenReturn(propertyPath);
 		when(property.toString()).thenReturn(propertyPath);
+
+		//adding support for getPropertyDefinition()
+		PropertyDefinition propertyDefinition = mock(PropertyDefinition.class);
+		when(property.getDefinition()).thenReturn(propertyDefinition);
+
+		boolean isMultiple = property.isMultiple();
+		when(propertyDefinition.isMultiple()).thenReturn(isMultiple);
+
+		int propertyType = property.getType();
+		when(propertyDefinition.getRequiredType()).thenReturn(propertyType);
+
 		buildParentHierarchy(parent, property, name);
 	}
 

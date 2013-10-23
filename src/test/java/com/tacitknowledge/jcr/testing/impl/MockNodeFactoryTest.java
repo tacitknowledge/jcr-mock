@@ -85,7 +85,6 @@ public class MockNodeFactoryTest {
         assertTrue(parent.hasProperty(name));
         assertTrue(parent.hasProperties());
         assertNotNull(property.getSession());
-
     }
 
     @Test
@@ -178,7 +177,6 @@ public class MockNodeFactoryTest {
 
     @Test
     public void shouldCreateBinaryValue() throws RepositoryException {
-
         nodeFactory.createValueFor(property, "/files/air_jordan.jpg", PropertyType.BINARY);
 
         assertNotNull(property.getBinary());
@@ -335,5 +333,29 @@ public class MockNodeFactoryTest {
 		assertTrue("Expected first level node to have secondLevel)", firstLevelNode.hasNode("secondLevel"));
 		assertEquals("Expected first level node to access secondLevel/thirdLevel)", firstLevelNode.getNode("secondLevel/thirdLevel"), thirdLevelNode);
 		assertEquals("Expected first level node to access secondLevel)", firstLevelNode.getNode("secondLevel"), secondLevelNode);
+	}
+
+	@Test
+	public void shouldSupportPropertyDefinition() throws RepositoryException {
+		Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+		Property singleStringProperty = nodeFactory.createProperty(rootNode, "singleStringProperty", "singleValue", PropertyType.STRING);
+		PropertyDefinition singleStringPropertyDef = singleStringProperty.getDefinition();
+		assertNotNull(singleStringPropertyDef);
+		assertFalse(singleStringPropertyDef.isMultiple());
+		assertEquals(PropertyType.STRING, singleStringPropertyDef.getRequiredType());
+
+		Property singleLongProperty = nodeFactory.createProperty(rootNode, "singleLongProperty", "5L", PropertyType.LONG);
+		PropertyDefinition singleLongPropertyDef = singleLongProperty.getDefinition();
+		assertNotNull(singleLongPropertyDef);
+		assertFalse(singleLongPropertyDef.isMultiple());
+		assertEquals(PropertyType.LONG, singleLongPropertyDef.getRequiredType());
+
+		String[] values = {"value1", "value2"};
+		Property multipleStringProperty = nodeFactory.createMultiValuedProperty(rootNode, "multipleStringProperty", values);
+		PropertyDefinition multipleStringPropertyDef = multipleStringProperty.getDefinition();
+		assertNotNull(multipleStringPropertyDef);
+		assertTrue(multipleStringPropertyDef.isMultiple());
+		assertEquals(PropertyType.STRING, multipleStringPropertyDef.getRequiredType());
 	}
 }
