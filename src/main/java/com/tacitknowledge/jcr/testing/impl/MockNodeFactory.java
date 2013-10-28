@@ -280,11 +280,13 @@ public class MockNodeFactory implements NodeFactory {
             {
                 when(parent.getNode(itemPath)).thenReturn((Node)childItem);
 	            when(parent.hasNode(itemPath)).thenReturn(true);
+	            when(parent.hasNodes()).thenReturn(true);
             }
             else
             {
                 when(parent.getProperty(itemPath)).thenReturn((Property)childItem);
 	            when(parent.hasProperty(itemPath)).thenReturn(true);
+	            when(parent.hasProperties()).thenReturn(true);
             }
 
             String parentName = parent.getName();

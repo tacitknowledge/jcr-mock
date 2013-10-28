@@ -358,4 +358,32 @@ public class MockNodeFactoryTest {
 		assertTrue(multipleStringPropertyDef.isMultiple());
 		assertEquals(PropertyType.STRING, multipleStringPropertyDef.getRequiredType());
 	}
+	
+	
+	@Test
+	public void shouldSupportHasNodes() throws RepositoryException {
+		
+        Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+        Node firstLevelNode = nodeFactory.createNode(rootNode, "firstLevel");
+        assertFalse(firstLevelNode.hasNodes());
+        
+        // give it a child
+        @SuppressWarnings("unused")
+		Node secondLevelNode = nodeFactory.createNode(firstLevelNode, "secondLevel");
+        assertTrue(firstLevelNode.hasNodes());
+	}
+	
+	@Test
+	public void shouldSupportHasProperties() throws RepositoryException {
+		
+        Node rootNode = nodeFactory.createNode(StringUtils.EMPTY);
+
+        Node firstLevelNode = nodeFactory.createNode(rootNode, "firstLevel");
+        assertFalse(firstLevelNode.hasProperties());
+        
+        nodeFactory.createProperty(firstLevelNode, "foo", "bar", PropertyTypeEnum.STRING.getPropertyType());
+        assertTrue(firstLevelNode.hasProperties());
+        		
+	}
 }
