@@ -197,8 +197,12 @@ public class MockNodeFactory implements NodeFactory {
             case PropertyType.DECIMAL:
                 createDecimalValueFor(property, returnValue, valueStr);
                 break;
+            case PropertyType.LONG:
+                createLongValueFor(property, returnValue, valueStr);
+                break;
             case PropertyType.DATE:
                 createDateValueFor(property, returnValue, valueStr);
+                // There is no break on purpose here so that Date creates also a string property
             default:
                 createStringValueFor(property, returnValue, valueStr);
                 break;
@@ -230,6 +234,12 @@ public class MockNodeFactory implements NodeFactory {
         }
         when(property.getDate()).thenReturn(calendar);
         when(returnValue.getDate()).thenReturn(calendar);
+    }
+
+    private void createLongValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
+        long longVal = Long.parseLong(valueStr);
+        when(property.getLong()).thenReturn(longVal);
+        when(returnValue.getLong()).thenReturn(longVal);
     }
 
     private void createDecimalValueFor(Property property, Value returnValue, String valueStr) throws RepositoryException {
