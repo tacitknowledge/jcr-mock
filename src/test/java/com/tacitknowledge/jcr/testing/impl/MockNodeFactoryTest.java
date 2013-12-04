@@ -164,7 +164,6 @@ public class MockNodeFactoryTest {
 		}
 	}
 
-
 	@Test
 	public void shouldCreateNewPropertyIteratorOnEachCallToGetNodes() throws RepositoryException {
 		List<Property> childNodes = new ArrayList<Property>();
@@ -173,7 +172,6 @@ public class MockNodeFactoryTest {
 		PropertyIterator secondPropertyIterator = parent.getProperties();
 		assertNotSame("Consecutive calls to getProperties() should return different iterator object", firstPropertyIterator, secondPropertyIterator);
 	}
-
 
     @Test
     public void shouldCreateBinaryValue() throws RepositoryException {
@@ -197,6 +195,13 @@ public class MockNodeFactoryTest {
         assertEquals(1.0, property.getDouble());
         assertNotNull(property.getSession());
 
+    }
+
+    @Test
+    public void shouldCreateLongValue() throws RepositoryException {
+        nodeFactory.createValueFor(property, "1", PropertyType.LONG);
+        assertEquals(1L, property.getLong());
+        assertNotNull(property.getSession());
     }
 
     @Test
@@ -345,7 +350,7 @@ public class MockNodeFactoryTest {
 		assertFalse(singleStringPropertyDef.isMultiple());
 		assertEquals(PropertyType.STRING, singleStringPropertyDef.getRequiredType());
 
-		Property singleLongProperty = nodeFactory.createProperty(rootNode, "singleLongProperty", "5L", PropertyType.LONG);
+		Property singleLongProperty = nodeFactory.createProperty(rootNode, "singleLongProperty", "5", PropertyType.LONG);
 		PropertyDefinition singleLongPropertyDef = singleLongProperty.getDefinition();
 		assertNotNull(singleLongPropertyDef);
 		assertFalse(singleLongPropertyDef.isMultiple());
