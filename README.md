@@ -110,7 +110,8 @@ Usage
     <dependency>
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
-        <version>2.1.1</version>
+        <version>2.1.4</version>
+        <scope>test<scope>
     </dependency>
 ```
 
@@ -224,6 +225,12 @@ Supported Functionality
 
 Change Log
 ----------
+* 2.1.4 - December 4, 2013
+  * Support for _property.getLong()_ method.
+* 2.1.3 - October 28, 2013
+  * Added support for _node.hasNodes()_ and _node.hasProperties()_
+* 2.1.2 - October 23, 2013
+  * Added support for _propertyDefinition.isMultiple()_ and _propertyDefinition.getRequiredType()_
 * 2.1.1 - October 21, 2013
   * Adding support for PropertyIterator (i.e. _node.getProperties()_).
   * Adding user friendly _toString()_ to Node and Property.
