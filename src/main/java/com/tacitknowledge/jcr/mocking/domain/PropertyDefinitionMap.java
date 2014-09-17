@@ -35,12 +35,7 @@ public class PropertyDefinitionMap extends HashMap<String, String>
         	String key = matcher.group(1);
         	put(TYPE, key);
         	String value = matcher.group(2);
-        	if(value.contains(PAIR_SEPARATOR)){
-        		String[] tokens = value.split(PAIR_SEPARATOR);
-        		put(VALUE, tokens[0].trim());
-        	}else{
-        		put(VALUE, value);
-        	}
+        	put(VALUE, value);
         }
         else if(propertyDefinition.contains(KEY_VALUE_SEPARATOR))
         {
