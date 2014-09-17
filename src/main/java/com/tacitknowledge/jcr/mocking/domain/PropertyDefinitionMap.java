@@ -1,9 +1,12 @@
 package com.tacitknowledge.jcr.mocking.domain;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.jcr.PropertyType;
-import java.util.HashMap;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
@@ -22,14 +25,22 @@ public class PropertyDefinitionMap extends HashMap<String, String>
         {
             throw new RuntimeException("Property definition must not be null");
         }
-
-        if(propertyDefinition.contains(PAIR_SEPARATOR))
+        //"type:Binary,value:/files/air_jordan.jpg"
+        //'type:String, value:The value of the property'
+        //"type:Binary,value:/files/air_jordan.jpg ,required:true";
+        Pattern pattern = Pattern.compile("type:([a-zA-Z]+),\\s*value:(.+)");
+        Matcher matcher = pattern.matcher(propertyDefinition);
+        if(matcher.find())
         {
-            String[] tokens = propertyDefinition.split(PAIR_SEPARATOR);
-            for(String token: tokens)
-            {
-                insertEntry(token);
-            }
+        	String key = matcher.group(1);
+        	put(TYPE, key);
+        	String value = matcher.group(2);
+        	if(value.contains(PAIR_SEPARATOR)){
+        		String[] tokens = value.split(PAIR_SEPARATOR);
+        		put(VALUE, tokens[0].trim());
+        	}else{
+        		put(VALUE, value);
+        	}
         }
         else if(propertyDefinition.contains(KEY_VALUE_SEPARATOR))
         {
