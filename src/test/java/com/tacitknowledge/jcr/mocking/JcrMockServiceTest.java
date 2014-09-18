@@ -461,7 +461,7 @@ public class JcrMockServiceTest {
 		    "}";
 		
 		Node rootNode = mockService.fromString(jsonNodeStructure);
-		Node jcr_contentNode = rootNode.getNode("/etc/sni-asset/test/jcr:content");
+		Node jcr_contentNode = rootNode.getNode("etc/sni-asset/test/jcr:content");
 		Property prop = jcr_contentNode.getProperty("test");
 		assertEquals(prop.getString(), "Here\'s a test with a comma,");
 	}
