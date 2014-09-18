@@ -1,12 +1,9 @@
 package com.tacitknowledge.jcr.mocking.domain;
 
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.jcr.PropertyType;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashMap;
 
 /**
  * @author Daniel Valencia (daniel@tacitknowledge.com)
@@ -25,17 +22,14 @@ public class PropertyDefinitionMap extends HashMap<String, String>
         {
             throw new RuntimeException("Property definition must not be null");
         }
-        //"type:Binary,value:/files/air_jordan.jpg"
-        //'type:String, value:The value of the property'
-        //"type:Binary,value:/files/air_jordan.jpg ,required:true";
-        Pattern pattern = Pattern.compile("type:([a-zA-Z]+),\\s*value:(.+)");
-        Matcher matcher = pattern.matcher(propertyDefinition);
-        if(matcher.find())
+
+        if(propertyDefinition.contains(PAIR_SEPARATOR))
         {
-        	String key = matcher.group(1);
-        	put(TYPE, key);
-        	String value = matcher.group(2);
-        	put(VALUE, value);
+            String[] tokens = propertyDefinition.split(PAIR_SEPARATOR);
+            for(String token: tokens)
+            {
+                insertEntry(token);
+            }
         }
         else if(propertyDefinition.contains(KEY_VALUE_SEPARATOR))
         {

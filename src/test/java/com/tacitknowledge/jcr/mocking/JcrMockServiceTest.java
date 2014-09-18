@@ -4,6 +4,7 @@ import com.tacitknowledge.jcr.mocking.impl.JsonMockService;
 import com.tacitknowledge.jcr.testing.NodeFactory;
 import com.tacitknowledge.jcr.testing.impl.MockNodeFactory;
 import com.tacitknowledge.jcr.testing.utils.JcrTestingUtils;
+
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.jcr.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -436,6 +438,32 @@ public class JcrMockServiceTest {
 		assertEquals(values[0].getString(), "skill1");
 		assertEquals(values[1].getString(), "skill2");
 		assertEquals(values[2].getString(), "skill3");
+	}
+	
+	/**
+	 * issue #23 test commas in a property value
+	 * @throws RepositoryException
+	 */
+	@Test
+	public void shouldReadPropertiesWithCommas() throws RepositoryException{
+		String jsonNodeStructure =
+		    	"{"+
+		        "etc: {"+
+		            "sni-asset: {"+
+		                "test: {"+
+		                    "\"jcr:content\": {"+
+		                        "nodeType: \"cq:PageContent\","+
+		                        "test: \"Here's a test with a comma,\""+
+		                    "}"+
+		                "}"+
+		            "}"+
+		        "}"+
+		    "}";
+		
+		Node rootNode = mockService.fromString(jsonNodeStructure);
+		Node jcr_contentNode = rootNode.getNode("/etc/sni-asset/test/jcr:content");
+		Property prop = jcr_contentNode.getProperty("test");
+		assertEquals(prop.getString(), "Here\'s a test with a comma,");
 	}
 
 }
