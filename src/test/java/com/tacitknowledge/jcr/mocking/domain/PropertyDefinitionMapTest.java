@@ -43,15 +43,23 @@ public class PropertyDefinitionMapTest {
         assertEquals("Expecting File Path", "/files/air_jordan.jpg", propertyValue);
 
         // Now let's test a different scenario in which we have a new attribute
-        //Leo: disable this test for now, as "required:true" is not well-defined (yet)
-       /* valueString = "type:Binary,value:/files/air_jordan.jpg ,required:true";
+        valueString = "type:Binary,value:/files/air_jordan.jpg ,required:true";
         propertyDefinitionMap = new PropertyDefinitionMap(valueString );
         propertyValue = propertyDefinitionMap.getValue();
 
         assertEquals("Expected type to be Binary", PropertyType.BINARY, propertyDefinitionMap.getType());
 
-        assertEquals("Expecting File Path", "/files/air_jordan.jpg", propertyValue);*/
+        assertEquals("Expecting File Path", "/files/air_jordan.jpg ,required:true", propertyValue);
+        
+        //issue #23 test commas in a property value
+        valueString = "Here's a test with a comma,";
+        propertyDefinitionMap = new PropertyDefinitionMap(valueString);
+        propertyValue = propertyDefinitionMap.getValue();
 
+        assertEquals("Expected type to be Binary", PropertyType.STRING, propertyDefinitionMap.getType());
+
+        assertEquals("Expecting File Path", valueString, propertyValue);
+        
     }
 
     @Test
