@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tacitknowledge</groupId>
     <artifactId>jcr-mock</artifactId>
-    <version>2.1.5-SNAPSHOT</version>
+    <version>2.1.5</version>
     <packaging>jar</packaging>
     <name>JCR Mock</name>
     <description>Testing and mocking utilities for the JCR</description>
