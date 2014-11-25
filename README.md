@@ -110,7 +110,7 @@ Usage
     <dependency>
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
-        <version>2.1.4</version>
+        <version>2.1.5</version>
         <scope>test<scope>
     </dependency>
 ```
@@ -225,6 +225,8 @@ Supported Functionality
 
 Change Log
 ----------
+* 2.1.5 - November 24, 2014
+  * Added support for commas in property values. Fixed issue #23
 * 2.1.4 - December 4, 2013
   * Support for _property.getLong()_ method.
 * 2.1.3 - October 28, 2013
