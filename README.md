@@ -111,7 +111,7 @@ Usage
         <groupId>com.tacitknowledge</groupId>
         <artifactId>jcr-mock</artifactId>
         <version>2.1.5</version>
-        <scope>test<scope>
+        <scope>test</scope>
     </dependency>
 ```
 
